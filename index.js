@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('./models/User.js');
 
-module.exports.connect = async () => {
-    await mongoose.connect('mongodb+srv://pedestalapp:FKA0Z7ajvRdRC7Ez@cluster0.ib7jt.mongodb.net/pedestal?retryWrites=true&w=majority', {
+module.exports.connect = async (user, password, cluster, database) => {
+    await mongoose.connect(`mongodb+srv://${user}:${password}@${cluster}/${database}?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
