@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
     photo: String,
     getstream_token: String,
     cognito_sub: String,
+    getstream_user_id: String
 });
 
 module.exports = mongoose.model('User', UserSchema);
