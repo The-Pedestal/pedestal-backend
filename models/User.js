@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     username: String,
     phone: String,
     photo: String,
+    getstream_token: String,
 });
 
 module.exports = mongoose.model('User', UserSchema);
