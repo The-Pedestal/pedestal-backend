@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const ConnectionSchema = new mongoose.Schema({
-    user_id: mongoose.Types.ObjectId,
+    user_id: String,
+    connected_user: String,
     status: String
 });
 
