@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     getstream_token: String,
     cognito_sub: String,
     getstream_user_id: String,
+    connections: [Object],
     interests: [String]
 });
 
