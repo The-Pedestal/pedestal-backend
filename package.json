@@ -1,15 +1,15 @@
 {
-  "name": "pedestal-backend",
-  "version": "1.8.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "mongoose": "^5.13.7"
-  }
+	"name": "pedestal-backend",
+	"version": "1.9.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"mongoose": "^5.13.7"
+	}
 }
