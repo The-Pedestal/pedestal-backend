@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema({
 	brand_statement: String,
 	experiences: [Object],
 	pronouns: String,
+	projects: [Object],
+	location: String,
+	education: [Object],
 });
 
 module.exports = mongoose.model(
