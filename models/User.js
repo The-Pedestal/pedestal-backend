@@ -1,5 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+// const UserEducation = mongoose.model(
+// 	'UserEducation',
+// 	educationSchema
+// );
+// const UserEducation = mongoose.model(
+// 	'UserExperience',
+// 	experienceSchema
+// );
+// const UserEducation = mongoose.model(
+// 	'UserProjects',
+// 	projectsSchema
+// );
+// const UserSocialMedia = mongoose.model(
+// 	'UserSocialMedia',
+// 	socialMediaSchema
+// );
 
 const UserSchema = new Schema({
 	first_name: {
@@ -12,7 +28,8 @@ const UserSchema = new Schema({
 	},
 	birth_date: Date,
 	gender: String,
-	occupation: String,
+	current_occupation: String,
+	current_company: String,
 	email: {
 		type: String,
 	},
@@ -27,130 +44,34 @@ const UserSchema = new Schema({
 	interests: [String],
 	tagline: String,
 	bio: String,
+	pronouns: String,
+	location: String,
 	brand_statement: String,
 	experiences: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: experienceSchema,
+			ref: 'UserExperience',
 		},
 	],
-	pronouns: String,
 	projects: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: projectSchema,
+			ref: 'UserProject',
 		},
 	],
-	location: String,
+
 	education: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: educationSchema,
+			ref: 'UserEducation',
 		},
 	],
 	social_media: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: socialMediaSchema,
+			ref: 'UserSocialMedia',
 		},
 	],
-});
-
-//project Schema
-const projectSchema = new Schema({
-	//who does the project belong to
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
-	name: {
-		type: String,
-		default: '',
-	},
-	url: {
-		type: String,
-		default: '',
-	},
-	description: {
-		type: String,
-		default: '',
-	},
-	image: {
-		type: String,
-		default: '',
-	},
-});
-
-//experiences schema
-const experienceSchema = new Schema({
-	title: {
-		type: String,
-		required: true,
-		default: '',
-	},
-	company: {
-		type: String,
-		required: true,
-		default: '',
-	},
-	location: {
-		type: String,
-		default: '',
-	},
-	description: {
-		type: String,
-		default: '',
-	},
-	start_date: {
-		type: Date,
-	},
-	current_job: {
-		type: Boolean,
-	},
-	end_date: {
-		type: Date,
-	},
-	//who does the experience belong to
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
-});
-
-//education schema
-const educationSchema = new Schema({
-	school: {
-		type: String,
-		required: true,
-		default: '',
-	},
-	degree: {
-		type: String,
-		default: '',
-	},
-	field_of_study: {
-		type: String,
-		default: '',
-	},
-	start_date: {
-		type: Date,
-	},
-	end_date: {
-		type: Date,
-	},
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
-});
-
-const socialMediaSchema = new Schema({
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
-	name: { type: String, default: '' },
-	url: { type: String, default: '' },
 });
 
 module.exports = mongoose.model(
