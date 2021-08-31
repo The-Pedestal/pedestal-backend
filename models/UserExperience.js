@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//experiences schema
-const ExperienceSchema = new Schema({
+const UserExperienceSchema = new Schema({
 	title: {
 		type: String,
 		required: true,
-		default: '',
 	},
 	company: {
 		type: String,
 		required: true,
-		default: '',
 	},
 	location: {
 		type: String,
@@ -32,12 +29,12 @@ const ExperienceSchema = new Schema({
 	},
 	//who does the experience belong to
 	user: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: String,
 		ref: 'User',
 	},
 });
 
 module.exports = mongoose.model(
 	'UserExperience',
-	ExperienceSchema
+	UserExperienceSchema
 );

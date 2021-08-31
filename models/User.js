@@ -1,80 +1,97 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// const UserEducation = mongoose.model(
-// 	'UserEducation',
-// 	educationSchema
-// );
-// const UserEducation = mongoose.model(
-// 	'UserExperience',
-// 	experienceSchema
-// );
-// const UserEducation = mongoose.model(
-// 	'UserProjects',
-// 	projectsSchema
-// );
-// const UserSocialMedia = mongoose.model(
-// 	'UserSocialMedia',
-// 	socialMediaSchema
-// );
 
 const UserSchema = new Schema({
-	first_name: {
-		type: String,
-		required: true,
-	},
-	last_name: {
-		type: String,
-		required: true,
-	},
-	birth_date: Date,
-	gender: String,
-	current_occupation: String,
-	current_company: String,
-	email: {
-		type: String,
-	},
-	username: String,
-	phone: String,
-	mentor: Boolean,
-	photo: String,
-	getstream_token: String,
-	cognito_sub: String,
-	getstream_user_id: String,
-	connections: [Object],
-	interests: [String],
-	tagline: String,
-	bio: String,
-	pronouns: String,
-	location: String,
-	brand_statement: String,
-	experiences: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'UserExperience',
-		},
-	],
-	projects: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'UserProject',
-		},
-	],
+    first_name: {
+        type: String,
+        required: true,
+    },
+    last_name: {
+        type: String,
+        required: true,
+    },
+    date_of_birth: {
+        type: String,
+        default: null, //should always be in MM/DD/YYYY format
+    },
+    gender: {
+        type: String,
+        default: null,
+        enum: {
+            values: [null, 'Male', 'Female', 'Other'],
+        }
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    phone: {
+        type: String,
+        required: true, //should always be in E.164 format
+    },
+    photo: {
+        type: String,
+        default: null,
+    },
+    cognito_sub: {
+        type: String,
+        default: null,
+    },
+    getstream_token: {
+        type: String,
+        default: null,
+    },
+    tagline: {
+        type: String,
+        default: null,
+    },
+    bio: {
+        type: String,
+        default: null,
+    },
+    pronouns: {
+        type: String,
+        default: null,
+    },
+    location: {
+        type: String,
+        default: null,
+    },
+    brand_statement: {
+        type: String,
+        default: null,
+    },
+    connections: [Object],
+    interests: [String],
+    experiences: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserExperience',
+    }],
+    projects: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserProject',
+    }],
+    education: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserEducation',
+    }],
+    social_media: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserSocialMedia',
+    }],
 
-	education: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'UserEducation',
-		},
-	],
-	social_media: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'UserSocialMedia',
-		},
-	],
+    /**
+     * @TODO add timezones
+     */
 });
 
 module.exports = mongoose.model(
-	'User',
-	UserSchema
+    'User',
+    UserSchema
 );
