@@ -1,9 +1,8 @@
-const User = require('../models/User.js');
-const UserExperience = require('../models/UserExperience.js');
+const stream = require('getstream');
+const Models = require('../models/models.js')
 const {
     connect
 } = require('../utils/Connections.js');
-const stream = require('getstream');
 
 const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
@@ -30,7 +29,7 @@ module.exports.init = async (express) => {
          */
         res.send({
             success: true,
-            data: await User.find({})
+            data: await Models.User.find({})
         });
     });
 
@@ -40,24 +39,19 @@ module.exports.init = async (express) => {
      * GET /users/{_id}
      */
     express.get('/users/:id', async (req, res) => {
-        const {
-            id
-        } = req.params;
         const result = {}
-
         try {
-            const user = await User.findById(id);
             /**
              * @TODO find a way to optimize this by using a single query.
              */
-            const user_experiences = await UserExperience.find({
-                user: id
-            });
-
-            user.experiences = user_experiences;
+            const user = await Models.User.findOne({
+                    _id: req.params.id
+                })
+                .populate('interests')
+                .populate('experiences')
+                .exec();
 
             res.status(200);
-
             result.success = true;
             result.data = user;
 
@@ -66,6 +60,7 @@ module.exports.init = async (express) => {
             result.success = false;
             result.error = error.message;
         }
+
         res.send(result);
     });
 
@@ -78,7 +73,7 @@ module.exports.init = async (express) => {
         const result = {};
         let error_message = false;
 
-        await User.create(req.body, async (error, user) => {
+        await Models.User.create(req.body, async (error, user) => {
             try {
                 if (!error) {
 
@@ -88,7 +83,7 @@ module.exports.init = async (express) => {
                     await client.user(user_id).create(user);
 
                     const stream_token = client.createUserToken(user_id);
-                    const new_user = await User.findByIdAndUpdate(user_id, {
+                    const new_user = await Models.User.findByIdAndUpdate(user_id, {
                         getstream_token: stream_token
                     }, {
                         returnOriginal: false
@@ -99,7 +94,10 @@ module.exports.init = async (express) => {
                     res.status(200);
 
                     result.success = true;
-                    result.data = user;
+                    result.data = await Models.User
+                        .findById(user_id)
+                        .populate('interests')
+                        .populate('experiences');
 
                 } else {
                     error_message = error.message;
@@ -126,22 +124,20 @@ module.exports.init = async (express) => {
      */
     express.put('/users/:id', async (req, res) => {
         const result = {};
-        const {
-            id
-        } = req.params;
-
         try {
             const client = stream.connect(STREAM_KEY, STREAM_SECRET);
-            const user = await User.findByIdAndUpdate(id, req.body, {
+            const user = await Models.User.findByIdAndUpdate(req.params.id, req.body, {
                 returnOriginal: false
             });
 
-            await client.user(id).update(user);
+            await client.user(req.params.id).update(user);
 
             res.status(200);
-
             result.success = true;
-            result.data = user;
+            result.data = result.data = await Models.User
+                .findById(req.params.id)
+                .populate('interests')
+                .populate('experiences');
 
         } catch (error) {
             res.status(500);
@@ -205,21 +201,16 @@ module.exports.init = async (express) => {
      *
      */
     express.get('/users/:id/experiences', async (req, res) => {
-        const {
-            id
-        } = req.params;
         const result = {};
-
         try {
-            const user_experiences = await UserExperience.find({
-                user: id
+            const user_experiences = await Models.UserExperience.find({
+                user: req.params.id
             });
 
             res.status(200);
 
             result.success = true;
             result.data = user_experiences;
-            result.params = id
         } catch (error) {
             res.status(500);
             result.success = false;
@@ -228,7 +219,6 @@ module.exports.init = async (express) => {
 
         res.send(result);
     });
-
 
     /**
      *

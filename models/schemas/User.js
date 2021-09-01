@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
+module.exports = new Schema({
     first_name: {
         type: String,
         required: true,
@@ -67,11 +67,17 @@ const UserSchema = new Schema({
         type: String,
         default: null,
     },
-    connections: [Object],
-    interests: [String],
+    connections: [{
+        type: Schema.Types.ObjectId,
+        ref: 'user_connection'
+    }],
+    interests: [{
+        type: Schema.Types.ObjectId,
+        ref: 'interest'
+    }],
     experiences: [{
         type: Schema.Types.ObjectId,
-        ref: 'UserExperience',
+        ref: 'user_experience',
     }],
     projects: [{
         type: Schema.Types.ObjectId,
@@ -90,8 +96,3 @@ const UserSchema = new Schema({
      * @TODO add timezones
      */
 });
-
-module.exports = mongoose.model(
-    'User',
-    UserSchema
-);

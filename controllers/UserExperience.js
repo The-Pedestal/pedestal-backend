@@ -1,12 +1,8 @@
-const UserExperience = require('../models/UserExperience.js');
-const User = require('../models/User.js');
 const {
     connect
 } = require('../utils/Connections.js');
 const stream = require('getstream');
-
-const STREAM_KEY = process.env.GETSTREAM_KEY;
-const STREAM_SECRET = process.env.GETSTREAM_SECRET;
+const Models = require('../models/models.js')
 
 /**
  *
@@ -17,35 +13,27 @@ module.exports.init = async (express) => {
     /**
      * Connects the application to the mongodb database;
      */
-    await connect();;
+    await connect();
 
-    /**
-     * Retrieves a list of experiences
-     *
-     * GET /users
-     */
-    express.get('/experiences', async (req, res) => {
+    express.get('/users/:user/experiences', async (req, res) => {
         /**
          * @TODO support filtering by adding query string as keywords
          */
         res.send({
             success: true,
-            data: await UserExperience.find({})
+            data: await Models.UserExperience.find({
+                user: req.params.user
+            })
         });
     });
 
-    /**
-     * Retrieves a single of experiences
-     *
-     * GET /users
-     */
-    express.get('/experiences/:id', async (req, res) => {
+    express.get('/users/:user/experiences/:id', async (req, res) => {
         const result = {};
-        const {
-            id
-        } = req.params;
         try {
-            const experience = await UserExperience.findById(id);
+            const experience = await Models.UserExperience.find({
+                user: req.params.user,
+                _id: req.params.id
+            });
             res.status(200);
             result.success = true;
             result.data = experience;
@@ -57,21 +45,13 @@ module.exports.init = async (express) => {
         res.send(result);
     });
 
-
-    /**
-     * Update
-     *
-     * GET /users
-     */
-    express.put('/experiences/:id', async (req, res) => {
+    express.put('/users/:user/experiences/:id', async (req, res) => {
         const result = {};
-        const {
-            id
-        } = req.params;
-
         try {
-
-            const experience = await UserExperience.findByIdAndUpdate(id, req.body, {
+            const experience = await Models.UserExperience.findOneAndUpdate({
+                user: req.params.user,
+                _id: req.params.id
+            }, req.body, {
                 returnOriginal: false
             });
 
@@ -93,15 +73,16 @@ module.exports.init = async (express) => {
      *
      * GET /users
      */
-    express.post('/experiences', async (req, res) => {
+    express.post('/users/:user/experiences', async (req, res) => {
         const result = {};
         let error_message = null;
 
-        await UserExperience.create(req.body, async (error, experience) => {
+        req.body.user = req.params.user;
+
+        Models.UserExperience.create(req.body, async (error, experience) => {
             if (!error) {
                 try {
-
-                    const user = await User.findByIdAndUpdate(experience.user, {
+                    const user = await Models.User.findByIdAndUpdate(experience.user, {
                         $addToSet: {
                             experiences: experience._id
                         }
@@ -128,25 +109,17 @@ module.exports.init = async (express) => {
         });
     });
 
-    express.delete('/experiences/:id', async (req, res) => {
-        const {
-            id
-        } = req.params;
+    express.delete('/users/:user/experiences/:id', async (req, res) => {
         const result = {};
         try {
-
-            const experience = await UserExperience.findById(id);
-
-            const user = await User.findByIdAndUpdate(experience.user, {
+            const user = await Models.User.findByIdAndUpdate(req.params.user, {
                 $pull: {
-                    experiences: experience._id
+                    experiences: req.params.id
                 }
             });
-
-            const delete_result = await UserExperience.deleteOne({
-                _id: id
+            const delete_result = await Models.UserExperience.deleteOne({
+                _id: req.params.id
             });
-
 
             res.status(200);
             result.success = true;
