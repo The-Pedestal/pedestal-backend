@@ -67,6 +67,10 @@ module.exports = new Schema({
         type: String,
         default: null,
     },
+    workspaces: [{
+        type: Schema.Types.ObjectId,
+        ref: 'user_workspace'
+    }],
     connections: [{
         type: Schema.Types.ObjectId,
         ref: 'user_connection'
@@ -91,8 +95,4 @@ module.exports = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'UserSocialMedia',
     }],
-
-    /**
-     * @TODO add timezones
-     */
 });

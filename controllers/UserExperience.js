@@ -82,7 +82,7 @@ module.exports.init = async (express) => {
         Models.UserExperience.create(req.body, async (error, experience) => {
             if (!error) {
                 try {
-                    const user = await Models.User.findByIdAndUpdate(experience.user, {
+                    await Models.User.findByIdAndUpdate(experience.user, {
                         $addToSet: {
                             experiences: experience._id
                         }

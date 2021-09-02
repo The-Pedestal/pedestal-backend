@@ -38,7 +38,7 @@ module.exports.init = async (express) => {
     express.get('/users/:user/connections/:id', async (req, res) => {
         const result = {}
         try {
-            const user = await Models.UserConnection.findOne({
+            const connection = await Models.UserConnection.findOne({
                     _id: req.params.id,
                     user: req.params.user
                 })
@@ -47,13 +47,14 @@ module.exports.init = async (express) => {
 
             res.status(200);
             result.success = true;
-            result.data = user.connections;
+            result.data = connection;
 
         } catch (error) {
             res.status(500);
             result.success = false;
             result.error = error.message;
         }
+        res.send(result);
     });
 
     express.post('/users/:user/connections', async (req, res) => {
