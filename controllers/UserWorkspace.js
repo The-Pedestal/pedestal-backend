@@ -10,6 +10,7 @@ module.exports.init = async (express) => {
             mentor: req.params.user
         })
         .populate('mentees')
+        .populate('achievements.achievement')
         .exec();
 
         res.status(200);
@@ -26,6 +27,7 @@ module.exports.init = async (express) => {
             mentor: req.params.user
         })
         .populate('mentees')
+        .populate('achievements.achievement')
         .exec();
 
         res.status(200);
@@ -52,6 +54,7 @@ module.exports.init = async (express) => {
             });
             const new_workspace = await Models.UserWorkspace.findById(workspace._id)
                 .populate('mentees')
+                .populate('achievements.achievement')
                 .exec();
 
             res.status(200);
@@ -72,6 +75,9 @@ module.exports.init = async (express) => {
             title: req.body.title,
             $addToSet: {
                 notes: req.body.notes
+            },
+            $addToSet: {
+                achievements: req.body.achievements
             }
         }, {
             returnOriginal: false

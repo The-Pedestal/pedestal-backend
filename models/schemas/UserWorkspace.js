@@ -8,14 +8,24 @@ module.exports = new Schema({
     },
     mentor: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'user',
+        required: true
     },
     mentees: [{
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'user',
+        default: [],
     }],
     notes: {
         type: Array,
         default: [],
-    }
+    },
+    achievements: [{
+        achievement: {
+            type: Schema.Types.ObjectId,
+            ref: 'achievement'
+        },
+        progress: Number,
+        unlocked_at: Date
+    }],
 });
