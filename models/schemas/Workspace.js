@@ -22,7 +22,7 @@ module.exports = new Schema({
         default: [],
     },
     schedules: [{
-        type: Scheme.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'workspace_schedule'
     }],
     achievements: [{
