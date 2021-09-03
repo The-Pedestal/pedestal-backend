@@ -16,5 +16,5 @@ module.exports = {
     UserExperience: mongoose.model('user_experience', UserExperienceSchema),
     Workspace: mongoose.model('workspace', WorkspaceSchema),
     Mentorship: mongoose.model('mentorship', MentorshipSchema),
-    WorkspaceSchedule: mongoose.model('workspace', WorkspaceScheduleSchema),
+    WorkspaceSchedule: mongoose.model('workspace_schedule', WorkspaceScheduleSchema),
 }
