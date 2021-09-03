@@ -28,4 +28,6 @@ module.exports.init = async (app) => {
     app.post('/workspaces/:workspace/schedules', WorkspaceScheduleController.create);
     app.put('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.update);
     app.delete('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.delete);
+
+
 }
