@@ -34,7 +34,7 @@ module.exports.show = async (req, res) => {
 
     res.status(200);
     result.success = true;
-    result.data =   achievement
+    result.data = achievement
 
     res.send(result);
 }
@@ -64,7 +64,7 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const result = {};
-    await Models.Workspace.updateOne({
+    Models.Workspace.updateOne({
         _id: req.params.workspace,
         'achievements._id': req.params.id
     }, {

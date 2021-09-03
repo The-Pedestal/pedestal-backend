@@ -21,6 +21,10 @@ module.exports = new Schema({
         type: Array,
         default: [],
     },
+    schedules: [{
+        type: Scheme.Types.ObjectId,
+        ref: 'workspace_schedule'
+    }],
     achievements: [{
         achievement: {
             type: Schema.Types.ObjectId,

@@ -23,9 +23,9 @@ module.exports.init = async (app) => {
     app.put('/workspaces/:workspace/achievements/:id', WorkspaceAchievementController.update);
     app.delete('/workspaces/:workspace/achievements/:id', WorkspaceAchievementController.delete);
 
-    // app.get('/workspaces/:workspace/schedules', WorkspaceScheduleController.get);
-    // app.get('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.show);
-    // app.post('/workspaces/:workspace/schedules', WorkspaceScheduleController.create);
-    // app.put('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.update);
-    // app.delete('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.delete);
+    app.get('/workspaces/:workspace/schedules', WorkspaceScheduleController.get);
+    app.get('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.show);
+    app.post('/workspaces/:workspace/schedules', WorkspaceScheduleController.create);
+    app.put('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.update);
+    app.delete('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.delete);
 }
