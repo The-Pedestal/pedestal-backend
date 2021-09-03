@@ -27,11 +27,11 @@ module.exports.init = async (app) => {
     app.put('/users/:user/connections/:id', UserConnectionController.update);
     app.delete('/users/:user/connections/:id', UserConnectionController.delete);
 
-    app.get('/users/:user/workspaces', WorkspaceController.get);
-    app.get('/users/:user/workspaces/:id', WorkspaceController.show);
-    app.post('/users/:user/workspaces', WorkspaceController.create);
-    app.put('/users/:user/workspaces/:id', WorkspaceController.update);
-    app.delete('/users/:user/workspaces/:id', WorkspaceController.delete);
+    app.get('/users/:user/workspaces', WorkspaceController.getUserWorkspace);
+    app.get('/users/:user/workspaces/:id', WorkspaceController.showUserWorkspace);
+    app.post('/users/:user/workspaces', WorkspaceController.createUserWorkspace);
+    app.put('/users/:user/workspaces/:id', WorkspaceController.updateUserWorkspace);
+    app.delete('/users/:user/workspaces/:id', WorkspaceController.deleteUserWorkspace);
 
     app.get('/users/:user/mentors', MentorshipController.getUserMentors);
     app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentors);

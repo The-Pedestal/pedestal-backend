@@ -2,11 +2,8 @@ const Models = require('../models');
 
 module.exports.get = async (req, res) => {
     const result = {};
-    const { user } = req.params;
-    const filter = user ? { mentor: user } : {};
-
-    const workspaces = await Models.Workspace.find(filter)
-        .populate('mentees')
+    const workspaces = await Models.Workspace.find({})
+        .populate('members')
         .populate('achievements.achievement')
         .exec();
 
@@ -18,17 +15,40 @@ module.exports.get = async (req, res) => {
 }
 
 module.exports.show = async (req, res) => {
-    const { id, user } = req.params;
-    const filter = { _id: id };
+    const result = {};
+    const workspace = await Models.Workspace.findOne({ _id: req.params.id })
+        .populate('members')
+        .populate('achievements.achievement')
+        .exec();
+
+    res.status(200);
+    result.success = true;
+    result.data = workspace;
+    res.send(result);
+}
+
+module.exports.update = async (req, res) => {
     const result = {};
 
-    if (user) {
-        filter.user = user;
-    }
+    await Models.Workspace.findOneAndUpdate({
+        _id: req.params.id
+    }, {
+        title: req.body.title,
+        $addToSet: {
+            notes: req.body.notes
+        },
+        $addToSet: {
+            achievements: req.body.achievements
+        },
+        $addToSet: {
+            members: req.body.members
+        }
+    });
 
-    const workspace = await Models.Workspace
-        .findOne(filter)
-        .populate('mentees')
+    const workspace = await Models.Workspace.findOne({
+            _id: req.params.id,
+        })
+        .populate('members')
         .populate('achievements.achievement')
         .exec();
 
@@ -39,24 +59,62 @@ module.exports.show = async (req, res) => {
     res.send(result);
 }
 
-module.exports.create = async (req, res) => {
+module.exports.delete = async (req, res) => {
+    Models.Workspace.findOneAndDelete({ _id: req.params.id }, async (err, workspace) => {
+        await Models.User.findByIdAndUpdate(req.params.user, {
+            $pull: {
+                workspaces: req.params.id
+            }
+        });
+        res.status(200).send();
+    });
+}
+
+module.exports.getUserWorkspace = async (req, res) => {
+    const result = {};
+    const workspaces = await Models.Workspace.find({
+            owner: req.params.user
+        })
+        .populate('members')
+        .populate('achievements.achievement')
+        .exec();
+
+    res.status(200);
+    result.success = true;
+    result.data = workspaces;
+
+    res.send(result);
+}
+
+module.exports.showUserWorkspace = async (req, res) => {
+    const result = {};
+    const workspace = await Models.Workspace.findOne({
+            _id: req.params.id,
+            owner: req.params.user
+        })
+        .populate('members')
+        .populate('achievements.achievement')
+        .exec();
+
+    res.status(200);
+    result.success = true;
+    result.data = workspace;
+    res.send(result);
+}
+
+module.exports.createUserWorkspace = async (req, res) => {
     const result = {};
     Models.Workspace.create({
         ...req.body,
-        mentor: req.params.user,
+        owner: req.params.user,
     }, async (error, workspace) => {
-
-        /**
-         * @TODO
-         * add a getstream feed for each workspace
-         */
         await Models.User.findByIdAndUpdate(req.params.user, {
             $addToSet: {
                 workspaces: workspace._id
             }
         });
         const new_workspace = await Models.Workspace.findById(workspace._id)
-            .populate('mentees')
+            .populate('members')
             .populate('achievements.achievement')
             .exec();
 
@@ -68,9 +126,11 @@ module.exports.create = async (req, res) => {
     });
 }
 
-module.exports.update = async (req, res) => {
+module.exports.updateUserWorkspace = async (req, res) => {
     const result = {};
-    const workspace = await Models.Workspace.findOneAndUpdate({
+
+    await Models.Workspace.findOneAndUpdate({
+        owner: req.params.user,
         _id: req.params.id
     }, {
         title: req.body.title,
@@ -80,9 +140,15 @@ module.exports.update = async (req, res) => {
         $addToSet: {
             achievements: req.body.achievements
         }
-    }, {
-        returnOriginal: false
     });
+
+    const workspace = await Models.Workspace.findOne({
+            _id: req.params.id,
+            owner: req.params.user
+        })
+        .populate('members')
+        .populate('achievements.achievement')
+        .exec();
 
     res.status(200);
     result.success = true;
@@ -91,14 +157,24 @@ module.exports.update = async (req, res) => {
     res.send(result);
 }
 
-module.exports.delete = async (req, res) => {
-    Models.Workspace
-    .findOneAndDelete({_id: req.params.id }, async (err, workspace) => {
-        await Models.User.findByIdAndUpdate(workspace.mentor, {
-            $pull: {
-                workspaces: workspace._id
-            }
-        });
-        res.status(204).send();
+module.exports.deleteUserWorkspace = async (req, res) => {
+    const result = {};
+    const delete_result = await Models.Workspace.deleteOne({
+        _id: req.params.id,
+        owner: req.params.user
     });
+
+    await Models.User.findByIdAndUpdate(req.params.user, {
+        $pull: {
+            workspaces: req.params.id
+        }
+    });
+
+    res.status(200);
+    result.success = true;
+    result.data = {
+        count: delete_result.deletedCount
+    };
+
+    res.send(result);
 }

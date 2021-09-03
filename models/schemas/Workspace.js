@@ -7,12 +7,12 @@ module.exports = new Schema({
         type: String,
         required: true
     },
-    mentor: {
+    owner: {
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true
     },
-    mentees: [{
+    members: [{
         type: Schema.Types.ObjectId,
         ref: 'user',
         default: [],
@@ -26,8 +26,15 @@ module.exports = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'achievement'
         },
-        progress: Number,
-        unlocked_at: Date
+        progress: {
+            type: Number,
+            default: 0
+        },
+        unlocked_at: {
+            type: Date,
+            default: null
+        },
+        ...Timestamps
     }],
     ...Timestamps,
 });
