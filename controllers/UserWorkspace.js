@@ -1,4 +1,4 @@
-const Models = require('../models/models.js')
+const Models = require('../models')
 const { connect } = require('../utils/Connections.js');
 
 module.exports.init = async (express) => {
@@ -6,7 +6,7 @@ module.exports.init = async (express) => {
 
     express.get('/users/:user/workspaces', async (req, res) => {
         const result = {};
-        const workspaces = await Models.UserWorkspace.find({
+        const workspaces = await Models.Workspace.find({
             mentor: req.params.user
         })
         .populate('mentees')
@@ -22,7 +22,7 @@ module.exports.init = async (express) => {
 
     express.get('/users/:user/workspaces/:id', async (req, res) => {
         const result = {};
-        const workspace = await Models.UserWorkspace.findOne({
+        const workspace = await Models.Workspace.findOne({
             _id: req.params.id,
             mentor: req.params.user
         })
@@ -52,7 +52,7 @@ module.exports.init = async (express) => {
                     workspaces: workspace._id
                 }
             });
-            const new_workspace = await Models.UserWorkspace.findById(workspace._id)
+            const new_workspace = await Models.Workspace.findById(workspace._id)
                 .populate('mentees')
                 .populate('achievements.achievement')
                 .exec();
@@ -67,7 +67,7 @@ module.exports.init = async (express) => {
 
     express.put('/users/:user/workspaces/:id', async (req, res) => {
         const result = {};
-        const workspace = await Models.UserWorkspace.findOneAndUpdate({
+        const workspace = await Models.Workspace.findOneAndUpdate({
             mentor: req.params.user,
             _id: req.params.id
         }, {
@@ -92,7 +92,7 @@ module.exports.init = async (express) => {
 
     express.delete('/users/:user/workspaces/:id', async (req, res) => {
         const result = {};
-        const delete_result = await Models.UserWorkspace.deleteOne({
+        const delete_result = await Models.Workspace.deleteOne({
             _id: req.params.id,
             mentor: req.params.user
         });

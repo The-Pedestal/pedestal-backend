@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Timestamps = require('./commons/Timestamps');
 
 module.exports = new Schema({
     first_name: {
@@ -69,7 +70,7 @@ module.exports = new Schema({
     },
     workspaces: [{
         type: Schema.Types.ObjectId,
-        ref: 'user_workspace'
+        ref: 'workspace'
     }],
     connections: [{
         type: Schema.Types.ObjectId,
@@ -95,4 +96,5 @@ module.exports = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'UserSocialMedia',
     }],
+    ...Timestamps,
 });
