@@ -4,9 +4,13 @@ const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 
 module.exports.get = async (req, res) => {
+
+    /**
+     * @TODO support more fields for filtering
+     */
     res.send({
         success: true,
-        data: await Models.User.find({})
+        data: await Models.User.find(req.query ?? null)
     });
 }
 
