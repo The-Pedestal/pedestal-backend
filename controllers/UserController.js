@@ -4,13 +4,32 @@ const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 
 module.exports.get = async (req, res) => {
+    const filter = {};
+    const {
+        cognito_sub,
+        interests,
+        exclude_ids
+    } = req.query;
 
-    /**
-     * @TODO support more fields for filtering
-     */
+    if (cognito_sub) {
+        filter.cognito_sub = cognito_sub;
+    }
+
+    if (exclude_ids) {
+        filter._id = {
+            $nin: exclude_ids.split(',')
+        }
+    }
+
+    if (interests) {
+        filter.interests = {
+            $in: interests.split(',')
+        };
+    }
+
     res.send({
         success: true,
-        data: await Models.User.find(req.query ?? null)
+        data: await Models.User.find(filter)
     });
 }
 
