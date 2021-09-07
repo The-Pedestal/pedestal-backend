@@ -99,7 +99,7 @@ module.exports.update = async (req, res) => {
     const result = {};
     try {
         const connection = await Models.UserConnection.findOneAndUpdate({
-            user: req.params.user,
+            connected_user: req.params.user,
             _id: req.params.id
         }, {
             status: req.body.status
