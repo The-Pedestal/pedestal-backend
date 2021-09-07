@@ -3,20 +3,21 @@ const Models = require('../models')
 module.exports.get = async (req, res) => {
     const result = {}
     try {
-        const user = await Models.User.findOne({
-            _id: req.params.user
-        })
-        .populate({
-            path: 'connections',
-            populate: {
-                path: 'connected_user'
-            }
-        })
-        .exec();
+        const connections = await Models.UserConnection
+            .find({
+                $or: [{
+                    user: req.params.user
+                }, {
+                    connected_user: req.params.user
+                }]
+            })
+            .populate('connected_user')
+            .populate('user')
+            .exec();
 
         res.status(200);
         result.success = true;
-        result.data = user.connections;
+        result.data = connections;
 
     } catch (error) {
         res.status(500);
