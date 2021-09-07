@@ -44,6 +44,7 @@ module.exports.show = async (req, res) => {
             })
             .populate('interests')
             .populate('experiences')
+            .populate('connections', ['connected_user', '_id', 'status'])
             .exec();
 
         res.status(200);
@@ -139,18 +140,27 @@ module.exports.delete = async (req, res) => {
 
 module.exports.suggestConnectionToUser = async (req, res) => {
     const user = await Models.User.findById(req.params.id);
+    const user_id = user._id.toString();
+
     const connections = await Models.UserConnection
-        .find({ user: { $eq : user._id } })
-        .select('connected_user');
+        .find({
+            $or: [{
+                user: user._id
+            }, {
+                connected_user: user._id
+            }]
+        })
+        .select(['connected_user', 'user']);
 
     res.send({
         success: true,
         data: await Models.User.find({
             _id: {
-                $nin: [...connections.map(c => c.connected_user), user._id]
+                $nin: [...connections.map(c => c.connected_user.toString() === user_id ? c.user : c.connected_user), user_id]
             },
-            /** look for a user the shares a common interests */
-            interests: { $in: user.interests }
+            interests: {
+                $in: user.interests
+            }
         })
     });
 }
