@@ -9,7 +9,10 @@ module.exports.get = async (req, res) => {
                     user: req.params.user
                 }, {
                     connected_user: req.params.user
-                }]
+                }],
+                status: {
+                    $in: ['pending', 'connected']
+                }
             })
             .populate('connected_user')
             .populate('user')
