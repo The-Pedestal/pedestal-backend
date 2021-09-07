@@ -17,7 +17,12 @@ module.exports.get = async (req, res) => {
 
         res.status(200);
         result.success = true;
-        result.data = connections;
+        result.data = connections.map(c => ({
+            _id: c._id,
+            status: c.status,
+            from: c.user._id,
+            user: c.user._id.equals(req.params.user) ? c.connected_user : c.user
+        }));
 
     } catch (error) {
         res.status(500);
