@@ -136,3 +136,21 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     res.send({});
 }
+
+module.exports.suggestConnectionToUser = async (req, res) => {
+    const user = await Models.User.findById(req.params.id);
+    const connections = await Models.UserConnection
+        .find({ user: { $eq : user._id } })
+        .select('connected_user');
+
+    res.send({
+        success: true,
+        data: await Models.User.find({
+            _id: {
+                $nin: [...connections.map(c => c.connected_user), user._id]
+            },
+            /** look for a user the shares a common interests */
+            interests: { $in: user.interests }
+        })
+    });
+}

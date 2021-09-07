@@ -15,6 +15,8 @@ module.exports.init = async (app) => {
     app.put('/users/:id', UserController.update);
     app.delete('/users/:id', UserController.delete);
 
+    app.get('/users/:id/suggest', UserController.suggestConnectionToUser);
+
     app.get('/users/:user/experiences', UserExperienceController.get);
     app.get('/users/:user/experiences/:id', UserExperienceController.show);
     app.post('/users/:user/experiences', UserExperienceController.create);
