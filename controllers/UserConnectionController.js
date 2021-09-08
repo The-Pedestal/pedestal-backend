@@ -1,4 +1,8 @@
 const Models = require('../models')
+const stream = require('getstream');
+const STREAM_KEY = process.env.GETSTREAM_KEY;
+const STREAM_SECRET = process.env.GETSTREAM_SECRET;
+const ConnectionStatus = require('../constants/ConnectionStatuses');
 
 module.exports.get = async (req, res) => {
     const result = {}
@@ -11,7 +15,7 @@ module.exports.get = async (req, res) => {
                     connected_user: req.params.user
                 }],
                 status: {
-                    $in: ['pending', 'connected']
+                    $in: [ConnectionStatus.PENDING, ConnectionStatus.ACCEPTED]
                 }
             })
             .populate('connected_user')
@@ -106,6 +110,14 @@ module.exports.update = async (req, res) => {
         }, {
             returnOriginal: false
         });
+
+        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
+        const user_feed = client.feed('users', connection.user);
+
+        /** follow the feed of the connected user */
+        if (connection.status === ConnectionStatus.ACCEPTED) {
+            user_feed.follow('users', connection.connected_user);
+        }
 
         res.status(200);
         result.success = true;
