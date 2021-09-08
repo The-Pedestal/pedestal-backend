@@ -1,28 +1,28 @@
 const Models = require('../models');
 
+//get all the user Projects
 module.exports.get = async (req, res) => {
-	/**
-	 * @TODO support filtering by adding query string as keywords
-	 */
 	res.send({
 		success: true,
-		data: await Models.UserExperience.find({
+		data: await Models.UserProject.find({
 			user: req.params.user,
 		}),
 	});
 };
 
+//get a single project
 module.exports.show = async (req, res) => {
 	const result = {};
 	try {
-		const experience =
-			await Models.UserExperience.find({
+		const project = await Models.UserProject.find(
+			{
 				user: req.params.user,
 				_id: req.params.id,
-			});
+			}
+		);
 		res.status(200);
 		result.success = true;
-		result.data = experience;
+		result.data = project;
 	} catch (error) {
 		res.status(500);
 		result.success = false;
@@ -31,29 +31,30 @@ module.exports.show = async (req, res) => {
 	res.send(result);
 };
 
+//create a project
 module.exports.create = async (req, res) => {
 	const result = {};
 	let error_message = null;
 
 	req.body.user = req.params.user;
 
-	Models.UserExperience.create(
+	Models.UserProject.create(
 		req.body,
-		async (error, experience) => {
+		async (error, project) => {
 			if (!error) {
 				try {
-					await Models.User.findByIdAndUpdate(
-						experience.user,
-						{
-							$addToSet: {
-								experiences: experience._id,
-							},
-						}
-					);
-
+					const user =
+						await Models.User.findByIdAndUpdate(
+							project.user,
+							{
+								$addToSet: {
+									projects: project._id,
+								},
+							}
+						);
 					res.status(200);
 					result.success = true;
-					result.data = experience;
+					result.data = project;
 				} catch (error) {
 					error_message = error.message;
 				}
@@ -66,36 +67,32 @@ module.exports.create = async (req, res) => {
 				result.error = error_message;
 				result.success = false;
 			}
-
 			res.send(result);
 		}
 	);
 };
 
+//update a project
 module.exports.update = async (req, res) => {
 	const result = {};
 	try {
-		const experience =
-			await Models.UserExperience.findOneAndUpdate(
+		const project =
+			await Models.UserProject.findOneAndUpdate(
 				{
 					user: req.params.user,
 					_id: req.params.id,
 				},
 				req.body,
-				{
-					returnOriginal: false,
-				}
+				{ returnOriginal: false }
 			);
-
 		res.status(200);
 		result.success = true;
-		result.data = experience;
+		result.data = project;
 	} catch (error) {
 		res.status(500);
 		result.error = error.message;
 		result.success = false;
 	}
-
 	res.send(result);
 };
 
@@ -107,12 +104,12 @@ module.exports.delete = async (req, res) => {
 				req.params.user,
 				{
 					$pull: {
-						experiences: req.params.id,
+						projects: req.params.id,
 					},
 				}
 			);
 		const delete_result =
-			await Models.UserExperience.deleteOne({
+			await Models.UserProject.deleteOne({
 				_id: req.params.id,
 			});
 
@@ -126,6 +123,5 @@ module.exports.delete = async (req, res) => {
 		result.error = error.message;
 		result.success = false;
 	}
-
 	res.send(result);
 };

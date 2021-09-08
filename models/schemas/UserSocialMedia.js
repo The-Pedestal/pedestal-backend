@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const SocialMediaSchema = new Schema({
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
+module.exports = new Schema({
 	name: { type: String, default: '' },
 	url: { type: String, default: '' },
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: 'user',
+	},
 });
-
-module.exports = mongoose.model(
-	'UserSocialMedia',
-	SocialMediaSchema
-);
