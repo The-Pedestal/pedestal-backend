@@ -113,10 +113,12 @@ module.exports.update = async (req, res) => {
 
         const client = stream.connect(STREAM_KEY, STREAM_SECRET);
         const user_feed = client.feed('users', connection.user);
+        const connecting_feed = client.feed('users', connection.connected_user);
 
         /** follow the feed of the connected user */
         if (connection.status === ConnectionStatus.ACCEPTED) {
-            user_feed.follow('users', connection.connected_user);
+            await user_feed.follow('users', connection.connected_user);
+            await connecting_feed.follow('users', connection.user);
         }
 
         res.status(200);
@@ -132,27 +134,20 @@ module.exports.update = async (req, res) => {
 }
 
 module.exports.delete = async (req, res) => {
-    const result = {};
-    try {
-        const user = await Models.User.findByIdAndUpdate(req.params.user, {
-            $pull: {
-                connections: req.params.id
-            }
-        });
-        const delete_result = await Models.UserConnection.deleteOne({
-            _id: req.params.id
-        });
+    await Models.User.findByIdAndUpdate(req.params.user, {
+        $pull: {
+            connections: req.params.id
+        }
+    });
 
-        res.status(200);
-        result.success = true;
-        result.data = {
-            count: delete_result.deletedCount
-        };
-    } catch (error) {
-        res.status(500);
-        result.error = error.message;
-        result.success = false;
-    }
+    Models.UserConnection.findByIdAndDelete(req.params.id, async (err, connection) => {
+        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
+        const user_feed = client.feed('users', connection.user);
+        const connecting_feed = client.feed('users', connection.connected_user);
 
-    res.send(result);
+        await user_feed.unfollow('users', connection.connected_user.toString());
+        await connecting_feed.unfollow('users', connection.user.toString());
+
+        res.status(200).send();
+    });
 }
