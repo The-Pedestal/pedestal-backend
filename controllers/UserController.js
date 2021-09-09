@@ -1,7 +1,8 @@
 const stream = require('getstream');
-const Models = require('../models')
+const Models = require('../models');
 const STREAM_KEY = process.env.GETSTREAM_KEY;
-const STREAM_SECRET = process.env.GETSTREAM_SECRET;
+const STREAM_SECRET =
+    process.env.GETSTREAM_SECRET;
 
 module.exports.get = async (req, res) => {
     const filter = {};
@@ -9,7 +10,8 @@ module.exports.get = async (req, res) => {
         cognito_sub,
         interests,
         exclude_ids
-    } = req.query;
+    } =
+    req.query;
 
     if (cognito_sub) {
         filter.cognito_sub = cognito_sub;
@@ -17,40 +19,46 @@ module.exports.get = async (req, res) => {
 
     if (exclude_ids) {
         filter._id = {
-            $nin: exclude_ids.split(',')
-        }
+            $nin: exclude_ids.split(','),
+        };
     }
 
     if (interests) {
         filter.interests = {
-            $in: interests.split(',')
+            $in: interests.split(','),
         };
     }
 
     res.send({
         success: true,
-        data: await Models.User.find(filter)
+        data: await Models.User.find(filter),
     });
-}
+};
 
 module.exports.show = async (req, res) => {
-    const result = {}
+    const result = {};
     try {
         /**
          * @TODO find a way to optimize this by using a single query.
          */
         const user = await Models.User.findOne({
-                _id: req.params.id
+                _id: req.params.id,
             })
             .populate('interests')
             .populate('experiences')
-            .populate('connections', ['connected_user', '_id', 'status'])
+            .populate('projects')
+            .populate('education')
+            .populate('social_media')
+            .populate('connections', [
+                'connected_user',
+                '_id',
+                'status',
+            ])
             .exec();
 
         res.status(200);
         result.success = true;
         result.data = user;
-
     } catch (error) {
         res.status(500);
         result.success = false;
@@ -58,73 +66,94 @@ module.exports.show = async (req, res) => {
     }
 
     res.send(result);
-}
+};
 
 module.exports.create = async (req, res) => {
     const result = {};
     let error_message = false;
 
-    await Models.User.create(req.body, async (error, user) => {
-        try {
-            if (!error) {
+    await Models.User.create(
+        req.body,
+        async (error, user) => {
+            try {
+                if (!error) {
+                    const client = stream.connect(
+                        STREAM_KEY,
+                        STREAM_SECRET
+                    );
+                    const user_id = user._id.toString();
 
-                const client = stream.connect(STREAM_KEY, STREAM_SECRET);
-                const user_id = user._id.toString();
+                    await client.user(user_id).create(user);
 
-                await client.user(user_id).create(user);
+                    const stream_token =
+                        client.createUserToken(user_id);
+                    const new_user =
+                        await Models.User.findByIdAndUpdate(
+                            user_id, {
+                                getstream_token: stream_token,
+                            }, {
+                                returnOriginal: false,
+                            }
+                        );
 
-                const stream_token = client.createUserToken(user_id);
-                const new_user = await Models.User.findByIdAndUpdate(user_id, {
-                    getstream_token: stream_token
-                }, {
-                    returnOriginal: false
-                });
+                    await client
+                        .user(user_id)
+                        .update(new_user);
 
-                await client.user(user_id).update(new_user);
+                    res.status(200);
 
-                res.status(200);
-
-                result.success = true;
-                result.data = await Models.User
-                    .findById(user_id)
-                    .populate('interests')
-                    .populate('experiences');
-
-            } else {
+                    result.success = true;
+                    result.data =
+                        await Models.User.findById(user_id)
+                        .populate('interests')
+                        .populate('experiences')
+                        .populate('education')
+                        .populate('projects')
+                        .populate('social_media');
+                } else {
+                    error_message = error.message;
+                }
+            } catch (error) {
                 error_message = error.message;
             }
 
-        } catch (error) {
-            error_message = error.message;
-        }
+            if (error_message) {
+                res.status(500);
+                result.success = false;
+                result.error = error.message;
+            }
 
-        if (error_message) {
-            res.status(500);
-            result.success = false;
-            result.error = error.message;
+            res.send(result);
         }
-
-        res.send(result);
-    });
-}
+    );
+};
 
 module.exports.update = async (req, res) => {
     const result = {};
     try {
-        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
-        const user = await Models.User.findByIdAndUpdate(req.params.id, req.body, {
-            returnOriginal: false
-        });
+        const client = stream.connect(
+            STREAM_KEY,
+            STREAM_SECRET
+        );
+        const user =
+            await Models.User.findByIdAndUpdate(
+                req.params.id,
+                req.body, {
+                    returnOriginal: false,
+                }
+            );
 
         await client.user(req.params.id).update(user);
 
         res.status(200);
         result.success = true;
-        result.data = result.data = await Models.User
-            .findById(req.params.id)
+        result.data = result.data =
+            await Models.User.findById(req.params.id)
             .populate('interests')
-            .populate('experiences');
-
+            .populate('experiences')
+            .populate('education')
+            .populate('projects')
+            .populate('social_media');
     } catch (error) {
         res.status(500);
         result.success = false;
@@ -132,11 +161,11 @@ module.exports.update = async (req, res) => {
     }
 
     res.send(result);
-}
+};
 
 module.exports.delete = async (req, res) => {
     res.send({});
-}
+};
 
 module.exports.suggestConnectionToUser = async (req, res) => {
     const user = await Models.User.findById(req.params.id);

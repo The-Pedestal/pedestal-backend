@@ -1,28 +1,27 @@
 const Models = require('../models');
 
+//get list of socials
 module.exports.get = async (req, res) => {
-	/**
-	 * @TODO support filtering by adding query string as keywords
-	 */
 	res.send({
 		success: true,
-		data: await Models.UserExperience.find({
+		data: await Models.UserSocialMedia.find({
 			user: req.params.user,
 		}),
 	});
 };
 
+//get a single social
 module.exports.show = async (req, res) => {
 	const result = {};
 	try {
-		const experience =
-			await Models.UserExperience.find({
+		const social =
+			await Models.UserSocialMedia.find({
 				user: req.params.user,
 				_id: req.params.id,
 			});
 		res.status(200);
 		result.success = true;
-		result.data = experience;
+		result.data = social;
 	} catch (error) {
 		res.status(500);
 		result.success = false;
@@ -31,29 +30,30 @@ module.exports.show = async (req, res) => {
 	res.send(result);
 };
 
+//create a social media
 module.exports.create = async (req, res) => {
 	const result = {};
 	let error_message = null;
 
 	req.body.user = req.params.user;
 
-	Models.UserExperience.create(
+	Models.UserSocialMedia.create(
 		req.body,
-		async (error, experience) => {
+		async (error, social) => {
 			if (!error) {
 				try {
 					await Models.User.findByIdAndUpdate(
-						experience.user,
+						social.user,
 						{
 							$addToSet: {
-								experiences: experience._id,
+								social_media: social._id,
 							},
 						}
 					);
 
 					res.status(200);
 					result.success = true;
-					result.data = experience;
+					result.data = social;
 				} catch (error) {
 					error_message = error.message;
 				}
@@ -72,11 +72,12 @@ module.exports.create = async (req, res) => {
 	);
 };
 
+//update a social
 module.exports.update = async (req, res) => {
 	const result = {};
 	try {
-		const experience =
-			await Models.UserExperience.findOneAndUpdate(
+		const social =
+			await Models.UserSocialMedia.findOneAndUpdate(
 				{
 					user: req.params.user,
 					_id: req.params.id,
@@ -89,7 +90,7 @@ module.exports.update = async (req, res) => {
 
 		res.status(200);
 		result.success = true;
-		result.data = experience;
+		result.data = social;
 	} catch (error) {
 		res.status(500);
 		result.error = error.message;
@@ -99,6 +100,7 @@ module.exports.update = async (req, res) => {
 	res.send(result);
 };
 
+//delete a single social media
 module.exports.delete = async (req, res) => {
 	const result = {};
 	try {
@@ -107,12 +109,12 @@ module.exports.delete = async (req, res) => {
 				req.params.user,
 				{
 					$pull: {
-						experiences: req.params.id,
+						social_media: req.params.id,
 					},
 				}
 			);
 		const delete_result =
-			await Models.UserExperience.deleteOne({
+			await Models.UserSocialMedia.deleteOne({
 				_id: req.params.id,
 			});
 
