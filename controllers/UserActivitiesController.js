@@ -16,7 +16,8 @@ module.exports.create = async (req, res) => {
             verb: req.body.verb,
             message: req.body.message,
             media: req.body.media,
-            user: req.params.user
+            user: req.params.user,
+            reference_id: null,
         });
 
     Models.UserActivity.create({
@@ -26,6 +27,13 @@ module.exports.create = async (req, res) => {
         media: req.body.media,
         user: req.params.user
     }, async (err, new_activity) => {
+        await getstream_client.activityPartialUpdate({
+            id: activity.id,
+            set: {
+                reference_id: new_activity._id
+            }
+        });
+
         result.success = true;
         result.data = new_activity;
         res.send(result);
