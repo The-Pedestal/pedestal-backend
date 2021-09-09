@@ -4,6 +4,7 @@ const UserController = require('../controllers/UserController');
 const UserConnectionController = require('../controllers/UserConnectionController');
 const UserExperienceController = require('../controllers/UserExperienceController');
 const MentorshipController = require('../controllers/MentorshipController');
+const UserActivitiesController = require('../controllers/UserActivitiesController');
 
 module.exports.init = async (app) => {
 
@@ -40,4 +41,9 @@ module.exports.init = async (app) => {
 
     app.get('/users/:user/mentees', MentorshipController.getUserMentees);
     app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentees);
+
+    /** User activities endpoint */
+    app.post('/users/:user/activities', UserActivitiesController.create);
+    app.put('/users/:user/activities/:id', UserActivitiesController.update);
+    app.delete('/users/:user/activities/:id', UserActivitiesController.delete);
 }
