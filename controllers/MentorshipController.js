@@ -76,24 +76,6 @@ module.exports.updateAgreementStatus = async (req, res) => {
     res.send(result);
 }
 
-module.exports.updateMentorAgreementStatus = async (req, res) => {
-    const result = {};
-    const mentorship = await Models.Mentorship.findOneAndUpdate({
-        mentor: req.params.user,
-        mentee: req.params.mentee,
-        _id: req.params.id
-    }, {
-        mentor_agreement_status: req.body.mentor_agreement_status,
-    }, {
-        returnOriginal: false
-    });
-
-    result.success = true;
-    result.data = mentorship;
-
-    res.send(result);
-}
-
 module.exports.getUserMentees = async (req, res) => {
     const result = {}
     const mentors = await Models.Mentorship.find({
@@ -167,9 +149,55 @@ module.exports.show = async (req, res) => {
     res.send(result);
 }
 
+module.exports.updateMentorshipAgreementStatus = async (req, res) => {
+    const result = {};
+    const mentorship = await Models.Mentorship.findOneAndUpdate({
+        mentor: req.params.user,
+        mentee: req.params.mentee,
+        _id: req.params.id
+    }, {
+        mentor_agreement_status: req.body.mentor_agreement_status,
+    }, {
+        returnOriginal: false
+    });
+
+    result.success = true;
+    result.data = mentorship;
+
+    res.send(result);
+}
+
 module.exports.create = async (req, res) => {
     const result = {};
-    Models.Mentorship.create(req.body, async (error, mentorship) => {
+    const user = req.body.user;
+    const applying_as = req.body.as;
+    const applying_to = req.body.to;
+
+    const new_mentorship = {
+        applicant: user,
+        mentor: null,
+        mentee: null,
+    };
+
+    /** apply the '@var user' as either mentor or mentee */
+    switch (applying_as) {
+        case AppConstants.MENTOR:
+            new_mentorship.mentor = user;
+            new_mentorship.mentee = applying_to;
+            /** accept the agreement status of the applicant */
+            new_mentorship.mentor_agreement_status = AppConstants.MENTOR_AGREEMENT_ACCEPTED
+            break;
+        case AppConstants.MENTEE:
+            new_mentorship.mentor = applying_to;
+            new_mentorship.mentee = user;
+            /** accept the agreement status of the applicant */
+            new_mentorship.mentee_agreement_status = AppConstants.MENTEE_AGREEMENT_ACCEPTED
+            break;
+        default:
+            throw 'can\'t failed to identify applicant role';
+    }
+
+    Models.Mentorship.create(new_mentorship, async (error, mentorship) => {
         try {
             res.status(200);
             result.success = true;
@@ -184,8 +212,33 @@ module.exports.create = async (req, res) => {
 }
 
 module.exports.update = async (req, res) => {
-    /** moved this to per user requests */
-    res.send();
+    const result = {};
+    const user = req.body.user;
+    const role = req.body.role;
+    const filter = {
+        _id: req.params.id
+    };
+    const update = {};
+
+    switch (role) {
+        case AppConstants.MENTOR:
+            filter.mentor = user;
+            update.mentor_agreement_status = req.body.agreement_status;
+            break;
+        case AppConstants.MENTEE:
+            filter.mentee = user;
+            update.mentee_agreement_status = req.body.agreement_status;
+            break;
+        default:
+            throw 'can\'t failed to identify the user\'s role';
+    }
+
+    const mentorship = await Models.Mentorship.findOneAndUpdate(filter, update, { returnOriginal: false });
+
+    result.success = true;
+    result.data = mentorship;
+
+    res.send(result);
 }
 
 module.exports.delete = async (req, res) => {

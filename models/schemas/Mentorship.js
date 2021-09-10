@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 const Timestamps = require('./commons/Timestamps');
 
 module.exports = new mongoose.Schema({
+    applicant:{
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    },
     mentor: {
         type: Schema.Types.ObjectId,
         ref: 'user'

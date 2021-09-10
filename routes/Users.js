@@ -62,8 +62,7 @@ module.exports.init = async (app) => {
     app.put('/users/:user/workspaces/:id', WorkspaceController.updateUserWorkspace);
     app.delete('/users/:user/workspaces/:id', WorkspaceController.deleteUserWorkspace);
 
-    /** mentorship  */
-    app.put('/users/:user/mentorships/:id', MentorshipController.updateAgreementStatus);
+    /** mentorship */
     app.get('/users/:user/mentors', MentorshipController.getUserMentors);
     app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentors);
     app.get('/users/:user/mentees', MentorshipController.getUserMentees);

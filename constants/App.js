@@ -16,3 +16,6 @@ module.exports.MENTORSHIP_PENDING = 'pending';
 module.exports.MENTORSHIP_ACCEPTED = 'accepted';
 module.exports.MENTORSHIP_COMPLETED = 'completed';
 module.exports.MENTORSHIP_DECLINED = 'declined';
+
+module.exports.MENTOR = 'mentor';
+module.exports.MENTEE = 'mentee';
