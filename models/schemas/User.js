@@ -2,6 +2,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Timestamps = require('./commons/Timestamps');
 
+const socialMediaSchema = new Schema({
+	facebook: 'String',
+	twitter: 'String',
+	linkedin: 'String',
+	tiktok: 'String',
+	medium: 'String',
+	torum: 'String',
+	pinterest: 'String',
+	github: 'String',
+	personal_site: 'String',
+	custom: {
+		name: 'String',
+		url: 'String',
+	},
+});
+
 module.exports = new Schema({
 	first_name: {
 		type: String,
@@ -104,11 +120,6 @@ module.exports = new Schema({
 			ref: 'user_education',
 		},
 	],
-	social_media: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'user_social_media',
-		},
-	],
+	social_media: [socialMediaSchema],
 	...Timestamps,
 });
