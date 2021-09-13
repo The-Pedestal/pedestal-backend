@@ -1,0 +1,40 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "editor.renderWhitespace": "all",
+  "files.trimTrailingWhitespace": true,
+  "editor.detectIndentation": false,
+  "editor.minimap.enabled": false,
+  "editor.renderControlCharacters": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "explorer.confirmDelete": false,
+  "workbench.startupEditor": "none",
+  "cSpell.userWords": [
+    "Iname",
+    "Mentorships",
+    "cognitoidentityserviceprovider",
+    "libphonenumber",
+    "mentee",
+    "mentees",
+    "signup"
+  ],
+  "prettier.tabWidth": 4,
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 120,
+  "vsicons.dontShowNewVersionMessage": true,
+  "prettier.trailingComma": "all",
+  "gitlens.views.showRelativeDateMarkers": false
+}
