@@ -93,7 +93,9 @@ module.exports.delete = async (req, res) => {
         'achievements._id': req.params.id
     }, {
         $pull: {
-            'achievements': { _id: req.params.id },
+            'achievements': {
+                _id: req.params.id
+            },
         }
     });
 

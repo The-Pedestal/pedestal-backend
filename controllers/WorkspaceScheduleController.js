@@ -79,5 +79,4 @@ module.exports.update = async (req, res) => {
     });
 }
 
-module.exports.delete = async (req, res) => {
-}
+module.exports.delete = async (req, res) => {}

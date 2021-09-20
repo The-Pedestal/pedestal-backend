@@ -16,7 +16,9 @@ module.exports.get = async (req, res) => {
 
 module.exports.show = async (req, res) => {
     const result = {};
-    const workspace = await Models.Workspace.findOne({ _id: req.params.id })
+    const workspace = await Models.Workspace.findOne({
+            _id: req.params.id
+        })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -60,7 +62,9 @@ module.exports.update = async (req, res) => {
 }
 
 module.exports.delete = async (req, res) => {
-    Models.Workspace.findOneAndDelete({ _id: req.params.id }, async (err, workspace) => {
+    Models.Workspace.findOneAndDelete({
+        _id: req.params.id
+    }, async (err, workspace) => {
         await Models.User.findByIdAndUpdate(req.params.user, {
             $pull: {
                 workspaces: req.params.id
