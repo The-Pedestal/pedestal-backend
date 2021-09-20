@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Timestamps = require("./commons/Timestamps");
 
+/** @TODO add this into a separate file */
 const socialMediaSchema = new Schema({
   facebook: "String",
   twitter: "String",
