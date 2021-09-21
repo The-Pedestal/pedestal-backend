@@ -1,5 +1,9 @@
 const Models = require('../models');
+const stream = require('getstream');
 const AppConstants = require('../constants/App');
+const STREAM_KEY = process.env.GETSTREAM_KEY;
+const STREAM_SECRET = process.env.GETSTREAM_SECRET;
+const getstream_client = stream.connect(STREAM_KEY, STREAM_SECRET);
 
 module.exports.getUserMentors = async (req, res) => {
     const result = {}
@@ -128,7 +132,6 @@ module.exports.create = async (req, res) => {
     const user = req.body.user;
     const applying_as = req.body.as;
     const applying_to = req.body.to;
-
     const new_mentorship = {
         applicant: user,
         mentor: null,
@@ -161,7 +164,7 @@ module.exports.create = async (req, res) => {
         } catch (err) {
             res.status(500);
             result.success = false;
-            result.error = error.message;
+            result.error = err.message;
         }
         res.send(result);
     });
@@ -173,8 +176,12 @@ module.exports.update = async (req, res) => {
     const role = req.body.role;
     const mentorship = await Models.Mentorship.findOne({
         _id: req.params.id,
-        ...(role === AppConstants.MENTOR && { mentor: user }),
-        ...(role === AppConstants.MENTEE && { mentee: user }),
+        ...(role === AppConstants.MENTOR && {
+            mentor: user
+        }),
+        ...(role === AppConstants.MENTEE && {
+            mentee: user
+        }),
     });
 
     switch (role) {

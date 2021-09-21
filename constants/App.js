@@ -19,3 +19,6 @@ module.exports.MENTORSHIP_DECLINED = 'declined';
 
 module.exports.MENTOR = 'mentor';
 module.exports.MENTEE = 'mentee';
+
+module.exports.REACTION_LIKE = 'like';
+module.exports.REACTION_COMMENT = 'comment';

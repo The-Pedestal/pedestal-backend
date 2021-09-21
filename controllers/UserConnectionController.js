@@ -71,7 +71,7 @@ module.exports.create = async (req, res) => {
     Models.UserConnection.create(req.body, async (error, connection) => {
         if (!error) {
             try {
-                const user = await Models.User.findByIdAndUpdate(connection.user, {
+                await Models.User.findByIdAndUpdate(connection.user, {
                     $addToSet: {
                         connections: connection._id
                     }
@@ -96,12 +96,12 @@ module.exports.create = async (req, res) => {
 
         res.send(result);
     });
-
 }
 
 module.exports.update = async (req, res) => {
     const result = {};
     try {
+        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
         const connection = await Models.UserConnection.findOneAndUpdate({
             connected_user: req.params.user,
             _id: req.params.id
@@ -111,14 +111,34 @@ module.exports.update = async (req, res) => {
             returnOriginal: false
         });
 
-        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
-        const user_feed = client.feed('users', connection.user);
-        const connecting_feed = client.feed('users', connection.connected_user);
+        /** notify the connected user that someone sent a connection request */
+        if (connection.status === ConnectionStatus.USER_CONNECTION_PENDING) {
+            await client.feed('notifications', connection.connected_user).addActivity({
+                actor: await client.user(connection.user._id).get(),
+                verb: `connection_${ConnectionStatus.USER_CONNECTION_PENDING}`,
+                object: await client.collections.add('user_connection', null, {
+                    connection: connection._id,
+                    message: `${connection.user.full_name} sent you a connection request.`,
+                    link: `profile/${connection.user._id}`
+                }),
+            });
+        }
 
-        /** follow the feed of the connected user */
         if (connection.status === ConnectionStatus.USER_CONNECTION_ACCEPTED) {
-            await user_feed.follow('users', connection.connected_user);
-            await connecting_feed.follow('users', connection.user);
+            /** follow the feed of the connected user */
+            await client.feed('users', connection.user).follow('users', connection.connected_user);
+            await client.feed('users', connection.connected_user).follow('users', connection.user);
+
+            /** notify the initiating user that the connection request has been accepted */
+            await client.feed('notifications', connection.user).addActivity({
+                actor: await client.user(connection.connected_user._id).get(),
+                verb: `connection_${ConnectionStatus.USER_CONNECTION_ACCEPTED}`,
+                object: await client.collections.add('user_connection', null, {
+                    connection: connection._id,
+                    message: `${connection.connected_user.full_name} accepted your connection request.`,
+                    link: `profile/${connection.connected_user._id}`
+                }),
+            });
         }
 
         res.status(200);
