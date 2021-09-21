@@ -3,6 +3,7 @@ const stream = require('getstream');
 const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 const ConnectionStatus = require('../constants/App');
+const gs_client = stream.connect(STREAM_KEY, STREAM_SECRET);
 
 module.exports.get = async (req, res) => {
     const result = {}
@@ -63,62 +64,72 @@ module.exports.show = async (req, res) => {
 }
 
 module.exports.create = async (req, res) => {
-    const result = {};
-    let error_message = null;
+    const {
+        connected_user
+    } = req.body;
+    const {
+        user
+    } = req.params;
 
-    req.body.user = req.params.user;
-
-    Models.UserConnection.create(req.body, async (error, connection) => {
-        if (!error) {
-            try {
-                const user = await Models.User.findByIdAndUpdate(connection.user, {
-                    $addToSet: {
-                        connections: connection._id
-                    }
-                });
-
-                res.status(200);
-                result.success = true;
-                result.data = connection;
-
-            } catch (error) {
-                error_message = error.message;
-            }
-        } else {
-            error_message = error.message;
-        }
-
-        if (error_message) {
-            res.status(500);
-            result.error = error_message;
-            result.success = false;
-        }
-
-        res.send(result);
+    const actor = await Models.User.findOne({
+        _id: user
     });
 
+    Models.UserConnection.create({
+        connected_user,
+        user
+    }, async (error, connection) => {
+        /** notify the connected user that someone sent a connection request */
+        await gs_client.feed('notifications', connected_user).addActivity({
+            actor: await gs_client.user(actor._id).get(),
+            verb: `connection_${ConnectionStatus.USER_CONNECTION_PENDING}`,
+            object: await gs_client.collections.add('user_connection', null, {
+                connection: connection._id,
+                message: `${actor.full_name} sent you a connection request.`,
+                link: `profile/${actor._id}`
+            }),
+        });
+
+        res.status(200);
+        res.send({
+            success: true,
+            data: connection
+        });
+    });
 }
 
 module.exports.update = async (req, res) => {
     const result = {};
     try {
         const connection = await Models.UserConnection.findOneAndUpdate({
-            connected_user: req.params.user,
-            _id: req.params.id
-        }, {
-            status: req.body.status
-        }, {
-            returnOriginal: false
-        });
+                user: req.params.user,
+                _id: req.params.id
+            }, {
+                status: req.body.status
+            }, {
+                returnOriginal: false
+            })
+            .populate('connected_user')
+            .exec();
 
-        const client = stream.connect(STREAM_KEY, STREAM_SECRET);
-        const user_feed = client.feed('users', connection.user);
-        const connecting_feed = client.feed('users', connection.connected_user);
-
-        /** follow the feed of the connected user */
         if (connection.status === ConnectionStatus.USER_CONNECTION_ACCEPTED) {
-            await user_feed.follow('users', connection.connected_user);
-            await connecting_feed.follow('users', connection.user);
+            /** follow the feed of the connected user */
+            await gs_client.feed('users', connection.user).follow('users', connection.connected_user._id);
+            await gs_client.feed('users', connection.connected_user._id).follow('users', connection.user);
+
+            /** receive notifications when the connected user creates an activity  */
+            await gs_client.feed('notifications', connection.user).follow('users', connection.connected_user._id);
+
+            /** notify the initiating user that the connection request has been accepted */
+            await gs_client.feed('notifications', connection.user).addActivity({
+                actor: await gs_client.user(connection.connected_user._id).get(),
+                verb: `connection_${ConnectionStatus.USER_CONNECTION_ACCEPTED}`,
+                object: await gs_client.collections.add('user_connection', null, {
+                    connection: connection._id,
+                    message: `${connection.connected_user.full_name} accepted your connection request.`,
+                    link: `profile/${connection.connected_user._id}`
+                }),
+            });
         }
 
         res.status(200);
