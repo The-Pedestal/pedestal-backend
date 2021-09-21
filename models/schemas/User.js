@@ -69,27 +69,23 @@ const UserSchema = new mongoose.Schema({
         default: null,
     },
     workspaces: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "workspace",
     }, ],
-    connections: [{
-        type: Schema.Types.ObjectId,
-        ref: "user_connection",
-    }, ],
     interests: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "interest",
     }, ],
     experiences: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user_experience",
     }, ],
     projects: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user_project",
     }, ],
     education: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user_education",
     }, ],
     social_media: [SocialMediaSchema],

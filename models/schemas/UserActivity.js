@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 const Timestamps = require('./commons/Timestamps');
 
 module.exports = new Schema({
-    activity_id: {
+    reference_id: {
         type: String,
-        required: true,
+        default: null
     },
     message: {
         type: String,
