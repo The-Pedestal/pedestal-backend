@@ -85,6 +85,7 @@ module.exports = new Schema({
     type: String,
     default: null,
   },
+  skills: [String],
   workspaces: [
     {
       type: Schema.Types.ObjectId,
