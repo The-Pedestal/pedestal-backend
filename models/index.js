@@ -4,6 +4,7 @@ const UserConnectionSchema = require("./schemas/UserConnection.js");
 const UserExperienceSchema = require("./schemas/UserExperience.js");
 const UserSchema = require("./schemas/User.js");
 const UserEducationSchema = require("./schemas/UserEducation.js");
+const UserVolunteerSchema = require("./schemas/UserVolunteer.js");
 const UserProjectSchema = require("./schemas/UserProject.js");
 const WorkspaceSchema = require("./schemas/Workspace.js");
 const AchievementsSchema = require("./schemas/Achievements.js");
@@ -13,6 +14,7 @@ const UserActivitySchema = require("./schemas/UserActivity");
 
 module.exports = {
   UserEducation: mongoose.model("user_education", UserEducationSchema),
+  UserVolunteer: mongoose.model("user_volunteer", UserVolunteerSchema),
   UserProject: mongoose.model("user_project", UserProjectSchema),
   Achievement: mongoose.model("achievement", AchievementsSchema),
   Interest: mongoose.model("interest", InterestSchema),

@@ -64,6 +64,7 @@ module.exports = new Schema({
     type: String,
     default: null,
   },
+
   tagline: {
     type: String,
     default: null,
@@ -118,6 +119,12 @@ module.exports = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "user_education",
+    },
+  ],
+  volunteer: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "user_volunteer",
     },
   ],
   social_media: [socialMediaSchema],

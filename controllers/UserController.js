@@ -32,14 +32,12 @@ module.exports.get = async (req, res) => {
 module.exports.show = async (req, res) => {
   const result = {};
   try {
-    /**
-     * @TODO find a way to optimize this by using a single query.
-     */
     const user = await Models.User.findOne({
       _id: req.params.id,
     })
       .populate("interests")
       .populate("experiences")
+      .populate("volunteer")
       .populate("projects")
       .populate("education")
       .populate("connections", ["connected_user", "_id", "status"])
@@ -48,6 +46,7 @@ module.exports.show = async (req, res) => {
     res.status(200);
     result.success = true;
     result.data = user;
+    console.log(user);
   } catch (error) {
     res.status(500);
     result.success = false;
@@ -88,6 +87,7 @@ module.exports.create = async (req, res) => {
         result.data = await Models.User.findById(user_id)
           .populate("interests")
           .populate("experiences")
+          .populate("volunteer")
           .populate("education")
           .populate("projects");
       } else {
@@ -122,6 +122,7 @@ module.exports.update = async (req, res) => {
     result.data = result.data = await Models.User.findById(req.params.id)
       .populate("interests")
       .populate("experiences")
+      .populate("volunteer")
       .populate("education")
       .populate("projects");
   } catch (error) {

@@ -4,6 +4,7 @@ const UserController = require("../controllers/UserController");
 const UserConnectionController = require("../controllers/UserConnectionController");
 const UserExperienceController = require("../controllers/UserExperienceController");
 const UserEducationController = require("../controllers/UserEducationController");
+const UserVolunteerController = require("../controllers/UserVolunteerController");
 const UserProjectController = require("../controllers/UserProjectController");
 const MentorshipController = require("../controllers/MentorshipController");
 const UserActivitiesController = require("../controllers/UserActivitiesController");
@@ -39,6 +40,13 @@ module.exports.init = async (app) => {
   app.post("/users/:user/education", UserEducationController.create);
   app.put("/users/:user/education/:id", UserEducationController.update);
   app.delete("/users/:user/education/:id", UserEducationController.delete);
+
+  /** volunteer */
+  app.get("/users/:user/volunteer", UserVolunteerController.get);
+  app.get("/users/:user/volunteer/:id", UserVolunteerController.show);
+  app.post("/users/:user/volunteer", UserVolunteerController.create);
+  app.put("/users/:user/volunteer/:id", UserVolunteerController.update);
+  app.delete("/users/:user/volunteer/:id", UserVolunteerController.delete);
 
   /** connections */
   app.get("/users/:user/connections", UserConnectionController.get);
