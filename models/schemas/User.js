@@ -122,12 +122,6 @@ module.exports = new Schema({
       ref: "user_education",
     },
   ],
-  volunteer: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "user_volunteer",
-    },
-  ],
   social_media: [socialMediaSchema],
   ...Timestamps,
 });
