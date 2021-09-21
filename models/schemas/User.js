@@ -69,6 +69,7 @@ module.exports = new Schema({
     type: String,
     default: null,
   },
+  mentor_status: Boolean,
   bio: {
     type: String,
     default: null,
