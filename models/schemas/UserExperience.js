@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Timestamps = require("./commons/Timestamps");
+// const Timestamps = require("./commons/Timestamps");
 
 module.exports = new Schema({
   title: {
@@ -21,12 +21,11 @@ module.exports = new Schema({
     type: String,
     default: "",
   },
-
-  start_date: {
-    type: Date,
-  },
   current_job: {
     type: Boolean,
+  },
+  start_date: {
+    type: Date,
   },
   end_date: {
     type: Date,
@@ -35,5 +34,4 @@ module.exports = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user",
   },
-  ...Timestamps,
 });
