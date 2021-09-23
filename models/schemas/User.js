@@ -68,6 +68,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    skills: [String],
     workspaces: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "workspace",
@@ -89,7 +90,6 @@ const UserSchema = new mongoose.Schema({
         ref: "user_education",
     }, ],
     social_media: [SocialMediaSchema],
-    ...Timestamps,
 });
 
 UserSchema.virtual('full_name').get(function () {
