@@ -44,10 +44,10 @@ module.exports.create = async (req, res) => {
                 try {
                     await Models.User.findByIdAndUpdate(
                         experience.user, {
-                            $addToSet: {
-                                experiences: experience._id,
-                            },
-                        }
+                        $addToSet: {
+                            experiences: experience._id,
+                        },
+                    }
                     );
 
                     res.status(200);
@@ -76,12 +76,12 @@ module.exports.update = async (req, res) => {
     try {
         const experience =
             await Models.UserExperience.findOneAndUpdate({
-                    user: req.params.user,
-                    _id: req.params.id,
-                },
+                user: req.params.user,
+                _id: req.params.id,
+            },
                 req.body, {
-                    returnOriginal: false,
-                }
+                returnOriginal: false,
+            }
             );
 
         res.status(200);
@@ -102,10 +102,10 @@ module.exports.delete = async (req, res) => {
         const user =
             await Models.User.findByIdAndUpdate(
                 req.params.user, {
-                    $pull: {
-                        experiences: req.params.id,
-                    },
-                }
+                $pull: {
+                    experiences: req.params.id,
+                },
+            }
             );
         const delete_result =
             await Models.UserExperience.deleteOne({

@@ -1,4 +1,4 @@
-const Models = require('../models');
+const Models = require("../models");
 
 module.exports.get = async (req, res) => {
     const result = {};
@@ -13,7 +13,7 @@ module.exports.get = async (req, res) => {
         result.error = error.message;
     }
     res.send(result);
-}
+};
 
 module.exports.show = async (req, res) => {
     const result = {};
@@ -28,7 +28,7 @@ module.exports.show = async (req, res) => {
         result.error = error.message;
     }
     res.send(result);
-}
+};
 
 module.exports.create = async (req, res) => {
     const result = {};
@@ -47,19 +47,23 @@ module.exports.create = async (req, res) => {
         }
         res.send(result);
     });
-}
+};
 
 module.exports.update = async (req, res) => {
     const result = {};
     try {
-        const interest = await Models.Interest.findByIdAndUpdate(req.params.id, req.body, {
-            returnOriginal: false
-        });
+        const interest = await Models.Interest.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                returnOriginal: false,
+            }
+        );
 
         res.status(200);
 
         result.success = true;
-        result.data = interest
+        result.data = interest;
     } catch (error) {
         res.status(500);
         result.success = false;
@@ -67,8 +71,8 @@ module.exports.update = async (req, res) => {
     }
 
     res.send(result);
-}
+};
 
 module.exports.delete = async (req, res) => {
     res.send({});
-}
+};

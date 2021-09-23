@@ -12,18 +12,18 @@ const WorkspaceScheduleSchema = require("./schemas/WorkspaceSchedule");
 const UserActivitySchema = require("./schemas/UserActivity");
 
 module.exports = {
-  UserEducation: mongoose.model("user_education", UserEducationSchema),
-  UserProject: mongoose.model("user_project", UserProjectSchema),
-  Achievement: mongoose.model("achievement", AchievementsSchema),
-  Interest: mongoose.model("interest", InterestSchema),
-  Mentorship: mongoose.model("mentorship", MentorshipSchema),
-  User: mongoose.model("user", UserSchema),
-  UserActivity: mongoose.model("user_activities", UserActivitySchema),
-  UserConnection: mongoose.model("user_connection", UserConnectionSchema),
-  UserExperience: mongoose.model("user_experience", UserExperienceSchema),
-  Workspace: mongoose.model("workspace", WorkspaceSchema),
-  WorkspaceSchedule: mongoose.model(
-    "workspace_schedule",
-    WorkspaceScheduleSchema
-  ),
+    UserEducation: mongoose.model("user_education", UserEducationSchema),
+    UserProject: mongoose.model("user_project", UserProjectSchema),
+    Achievement: mongoose.model("achievement", AchievementsSchema),
+    Interest: mongoose.model("interest", InterestSchema),
+    Mentorship: mongoose.model("mentorship", MentorshipSchema),
+    User: mongoose.model("user", UserSchema),
+    UserActivity: mongoose.model("user_activities", UserActivitySchema),
+    UserConnection: mongoose.model("user_connection", UserConnectionSchema),
+    UserExperience: mongoose.model("user_experience", UserExperienceSchema),
+    Workspace: mongoose.model("workspace", WorkspaceSchema),
+    WorkspaceSchedule: mongoose.model(
+        "workspace_schedule",
+        WorkspaceScheduleSchema
+    ),
 };
