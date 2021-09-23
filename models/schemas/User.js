@@ -69,31 +69,41 @@ const UserSchema = new mongoose.Schema({
         default: null,
     },
     skills: [String],
-    workspaces: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "workspace",
-    }, ],
-    interests: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "interest",
-    }, ],
-    experiences: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user_experience",
-    }, ],
-    projects: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user_project",
-    }, ],
-    education: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user_education",
-    }, ],
+    workspaces: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "workspace",
+        },
+    ],
+    interests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "interest",
+        },
+    ],
+    experiences: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user_experience",
+        },
+    ],
+    projects: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user_project",
+        },
+    ],
+    education: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user_education",
+        },
+    ],
     social_media: [SocialMediaSchema],
 });
 
-UserSchema.virtual('full_name').get(function () {
-    return this.first_name + ' ' + this.last_name;
+UserSchema.virtual("full_name").get(function () {
+    return this.first_name + " " + this.last_name;
 });
 
 module.exports = UserSchema;

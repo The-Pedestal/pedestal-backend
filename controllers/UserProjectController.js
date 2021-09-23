@@ -44,10 +44,10 @@ module.exports.create = async (req, res) => {
                     const user =
                         await Models.User.findByIdAndUpdate(
                             project.user, {
-                                $addToSet: {
-                                    projects: project._id,
-                                },
-                            }
+                            $addToSet: {
+                                projects: project._id,
+                            },
+                        }
                         );
                     res.status(200);
                     result.success = true;
@@ -75,12 +75,12 @@ module.exports.update = async (req, res) => {
     try {
         const project =
             await Models.UserProject.findOneAndUpdate({
-                    user: req.params.user,
-                    _id: req.params.id,
-                },
+                user: req.params.user,
+                _id: req.params.id,
+            },
                 req.body, {
-                    returnOriginal: false
-                }
+                returnOriginal: false
+            }
             );
         res.status(200);
         result.success = true;
@@ -99,10 +99,10 @@ module.exports.delete = async (req, res) => {
         const user =
             await Models.User.findByIdAndUpdate(
                 req.params.user, {
-                    $pull: {
-                        projects: req.params.id,
-                    },
-                }
+                $pull: {
+                    projects: req.params.id,
+                },
+            }
             );
         const delete_result =
             await Models.UserProject.deleteOne({

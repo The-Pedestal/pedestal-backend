@@ -1,34 +1,34 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Timestamps = require('./commons/Timestamps');
+const Timestamps = require("./commons/Timestamps");
 
 module.exports = new mongoose.Schema({
-    applicant:{
+    applicant: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: "user",
     },
     mentor: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: "user",
     },
     mentee: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: "user",
     },
     status: {
         type: String,
-        default: 'pending',
-        values: ['pending', 'accepted', 'declined', 'completed'],
+        default: "pending",
+        values: ["pending", "accepted", "declined", "completed"],
     },
     mentee_agreement_status: {
         type: String,
-        default: 'pending',
-        values: ['pending', 'accepted', 'declined'],
+        default: "pending",
+        values: ["pending", "accepted", "declined"],
     },
     mentor_agreement_status: {
         type: String,
-        default: 'pending',
-        values: ['pending', 'accepted', 'declined'],
+        default: "pending",
+        values: ["pending", "accepted", "declined"],
     },
     ...Timestamps,
 });

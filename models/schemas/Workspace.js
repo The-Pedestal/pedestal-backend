@@ -1,44 +1,50 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Timestamps = require('./commons/Timestamps');
+const Timestamps = require("./commons/Timestamps");
 
 module.exports = new Schema({
     title: {
         type: String,
-        required: true
+        required: true,
     },
     owner: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
+        ref: "user",
+        required: true,
     },
-    members: [{
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-        default: [],
-    }],
+    members: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+            default: [],
+        },
+    ],
     notes: {
         type: Array,
         default: [],
     },
-    schedules: [{
-        type: Schema.Types.ObjectId,
-        ref: 'workspace_schedule'
-    }],
-    achievements: [{
-        achievement: {
+    schedules: [
+        {
             type: Schema.Types.ObjectId,
-            ref: 'achievement'
+            ref: "workspace_schedule",
         },
-        progress: {
-            type: Number,
-            default: 0
+    ],
+    achievements: [
+        {
+            achievement: {
+                type: Schema.Types.ObjectId,
+                ref: "achievement",
+            },
+            progress: {
+                type: Number,
+                default: 0,
+            },
+            unlocked_at: {
+                type: Date,
+                default: null,
+            },
+            ...Timestamps,
         },
-        unlocked_at: {
-            type: Date,
-            default: null
-        },
-        ...Timestamps
-    }],
+    ],
     ...Timestamps,
 });

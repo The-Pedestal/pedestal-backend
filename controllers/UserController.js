@@ -40,8 +40,8 @@ module.exports.show = async (req, res) => {
          * @TODO find a way to optimize this by using a single query.
          */
         const user = await Models.User.findOne({
-                _id: req.params.id,
-            })
+            _id: req.params.id,
+        })
             .populate("interests")
             .populate("experiences")
             .populate("projects")
@@ -76,10 +76,10 @@ module.exports.create = async (req, res) => {
                 const stream_token = client.createUserToken(user_id);
                 const new_user = await Models.User.findByIdAndUpdate(
                     user_id, {
-                        getstream_token: stream_token,
-                    }, {
-                        returnOriginal: false,
-                    }
+                    getstream_token: stream_token,
+                }, {
+                    returnOriginal: false,
+                }
                 );
 
                 await client.user(user_id).update(new_user);
@@ -145,11 +145,11 @@ module.exports.suggestConnectionToUser = async (req, res) => {
 
     const connections = await Models.UserConnection.find({
         $or: [{
-                user: user._id,
-            },
-            {
-                connected_user: user._id,
-            },
+            user: user._id,
+        },
+        {
+            connected_user: user._id,
+        },
         ],
     }).select(["connected_user", "user"]);
 

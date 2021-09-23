@@ -6,10 +6,10 @@ const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 const getstream_client = stream.connect(STREAM_KEY, STREAM_SECRET);
 
 module.exports.getUserMentors = async (req, res) => {
-    const result = {}
+    const result = {};
     const mentors = await Models.Mentorship.find({
-            mentee: req.params.user
-        })
+        mentee: req.params.user
+    })
         .populate('mentor')
         .exec();
 
@@ -18,14 +18,14 @@ module.exports.getUserMentors = async (req, res) => {
     result.data = mentors;
 
     res.send(result);
-}
+};
 
 module.exports.showUserMentors = async (req, res) => {
-    const result = {}
+    const result = {};
     const mentors = await Models.Mentorship.findOne({
-            mentor: req.params.mentor,
-            mentee: req.params.user
-        })
+        mentor: req.params.mentor,
+        mentee: req.params.user
+    })
         .populate('mentor')
         .exec();
 
@@ -34,13 +34,13 @@ module.exports.showUserMentors = async (req, res) => {
     result.data = mentors;
 
     res.send(result);
-}
+};
 
 module.exports.getUserMentees = async (req, res) => {
-    const result = {}
+    const result = {};
     const mentors = await Models.Mentorship.find({
-            mentor: req.params.user
-        })
+        mentor: req.params.user
+    })
         .populate('mentee')
         .exec();
 
@@ -49,14 +49,14 @@ module.exports.getUserMentees = async (req, res) => {
     result.data = mentors;
 
     res.send(result);
-}
+};
 
 module.exports.showUserMentees = async (req, res) => {
-    const result = {}
+    const result = {};
     const mentees = await Models.Mentorship.findOne({
-            mentee: req.params.mentee,
-            mentor: req.params.user
-        })
+        mentee: req.params.mentee,
+        mentor: req.params.user
+    })
         .populate('mentee')
         .exec();
 
@@ -65,10 +65,10 @@ module.exports.showUserMentees = async (req, res) => {
     result.data = mentees;
 
     res.send(result);
-}
+};
 
 module.exports.get = async (req, res) => {
-    const result = {}
+    const result = {};
     try {
         const mentorships = await Models.Mentorship.find({})
             .populate('mentor')
@@ -85,14 +85,14 @@ module.exports.get = async (req, res) => {
     }
 
     res.send(result);
-}
+};
 
 module.exports.show = async (req, res) => {
-    const result = {}
+    const result = {};
     try {
         const mentorship = await Models.Mentorship.findOne({
-                _id: req.params.id,
-            })
+            _id: req.params.id,
+        })
             .populate('mentor')
             .populate('mentee')
             .exec();
@@ -107,7 +107,7 @@ module.exports.show = async (req, res) => {
         result.error = error.message;
     }
     res.send(result);
-}
+};
 
 module.exports.updateMentorshipAgreementStatus = async (req, res) => {
     const result = {};
@@ -125,7 +125,7 @@ module.exports.updateMentorshipAgreementStatus = async (req, res) => {
     result.data = mentorship;
 
     res.send(result);
-}
+};
 
 module.exports.create = async (req, res) => {
     const result = {};
@@ -144,13 +144,13 @@ module.exports.create = async (req, res) => {
             new_mentorship.mentor = user;
             new_mentorship.mentee = applying_to;
             /** accept the agreement status of the applicant */
-            new_mentorship.mentor_agreement_status = AppConstants.MENTOR_AGREEMENT_ACCEPTED
+            new_mentorship.mentor_agreement_status = AppConstants.MENTOR_AGREEMENT_ACCEPTED;
             break;
         case AppConstants.MENTEE:
             new_mentorship.mentor = applying_to;
             new_mentorship.mentee = user;
             /** accept the agreement status of the applicant */
-            new_mentorship.mentee_agreement_status = AppConstants.MENTEE_AGREEMENT_ACCEPTED
+            new_mentorship.mentee_agreement_status = AppConstants.MENTEE_AGREEMENT_ACCEPTED;
             break;
         default:
             throw 'can\'t failed to identify applicant role';
@@ -168,7 +168,7 @@ module.exports.create = async (req, res) => {
         }
         res.send(result);
     });
-}
+};
 
 module.exports.update = async (req, res) => {
     const result = {};
@@ -216,8 +216,8 @@ module.exports.update = async (req, res) => {
     result.data = mentorship;
 
     res.send(result);
-}
+};
 
 module.exports.delete = async (req, res) => {
     res.send();
-}
+};

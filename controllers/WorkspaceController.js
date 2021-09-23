@@ -12,13 +12,13 @@ module.exports.get = async (req, res) => {
     result.data = workspaces;
 
     res.send(result);
-}
+};
 
 module.exports.show = async (req, res) => {
     const result = {};
     const workspace = await Models.Workspace.findOne({
-            _id: req.params.id
-        })
+        _id: req.params.id
+    })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -27,7 +27,7 @@ module.exports.show = async (req, res) => {
     result.success = true;
     result.data = workspace;
     res.send(result);
-}
+};
 
 module.exports.update = async (req, res) => {
     const result = {};
@@ -48,8 +48,8 @@ module.exports.update = async (req, res) => {
     });
 
     const workspace = await Models.Workspace.findOne({
-            _id: req.params.id,
-        })
+        _id: req.params.id,
+    })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -59,7 +59,7 @@ module.exports.update = async (req, res) => {
     result.data = workspace;
 
     res.send(result);
-}
+};
 
 module.exports.delete = async (req, res) => {
     Models.Workspace.findOneAndDelete({
@@ -72,13 +72,13 @@ module.exports.delete = async (req, res) => {
         });
         res.status(200).send();
     });
-}
+};
 
 module.exports.getUserWorkspace = async (req, res) => {
     const result = {};
     const workspaces = await Models.Workspace.find({
-            owner: req.params.user
-        })
+        owner: req.params.user
+    })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -88,14 +88,14 @@ module.exports.getUserWorkspace = async (req, res) => {
     result.data = workspaces;
 
     res.send(result);
-}
+};
 
 module.exports.showUserWorkspace = async (req, res) => {
     const result = {};
     const workspace = await Models.Workspace.findOne({
-            _id: req.params.id,
-            owner: req.params.user
-        })
+        _id: req.params.id,
+        owner: req.params.user
+    })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -104,7 +104,7 @@ module.exports.showUserWorkspace = async (req, res) => {
     result.success = true;
     result.data = workspace;
     res.send(result);
-}
+};
 
 module.exports.createUserWorkspace = async (req, res) => {
     const result = {};
@@ -128,7 +128,7 @@ module.exports.createUserWorkspace = async (req, res) => {
 
         res.send(result);
     });
-}
+};
 
 module.exports.updateUserWorkspace = async (req, res) => {
     const result = {};
@@ -147,9 +147,9 @@ module.exports.updateUserWorkspace = async (req, res) => {
     });
 
     const workspace = await Models.Workspace.findOne({
-            _id: req.params.id,
-            owner: req.params.user
-        })
+        _id: req.params.id,
+        owner: req.params.user
+    })
         .populate('members')
         .populate('achievements.achievement')
         .exec();
@@ -159,7 +159,7 @@ module.exports.updateUserWorkspace = async (req, res) => {
     result.data = workspace;
 
     res.send(result);
-}
+};
 
 module.exports.deleteUserWorkspace = async (req, res) => {
     const result = {};
@@ -181,4 +181,4 @@ module.exports.deleteUserWorkspace = async (req, res) => {
     };
 
     res.send(result);
-}
+};

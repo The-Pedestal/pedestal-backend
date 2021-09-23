@@ -1,4 +1,4 @@
-const Models = require('../models');
+const Models = require("../models");
 
 module.exports.get = async (req, res) => {
     const result = {};
@@ -10,7 +10,7 @@ module.exports.get = async (req, res) => {
     result.data = achievements;
 
     res.send(result);
-}
+};
 
 module.exports.show = async (req, res) => {
     const result = {};
@@ -22,7 +22,7 @@ module.exports.show = async (req, res) => {
     result.data = achievement;
 
     res.send(result);
-}
+};
 
 module.exports.create = async (req, res) => {
     const result = {};
@@ -34,15 +34,19 @@ module.exports.create = async (req, res) => {
     result.data = achievement;
 
     res.send(result);
-}
+};
 
 module.exports.update = async (req, res) => {
     const result = {};
-    const achievement = await Models.Achievement.findOneAndUpdate({
-        _id: req.params.id
-    }, req.body, {
-        returnOriginal: false
-    });
+    const achievement = await Models.Achievement.findOneAndUpdate(
+        {
+            _id: req.params.id,
+        },
+        req.body,
+        {
+            returnOriginal: false,
+        }
+    );
 
     res.status(200);
 
@@ -50,8 +54,8 @@ module.exports.update = async (req, res) => {
     result.data = achievement;
 
     res.send(result);
-}
+};
 
 module.exports.delete = async (req, res) => {
     res.send({});
-}
+};

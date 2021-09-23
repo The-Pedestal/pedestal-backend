@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Timestamps = require('./commons/Timestamps');
+const Timestamps = require("./commons/Timestamps");
 
 module.exports = new Schema({
     reference_id: {
         type: String,
-        default: null
+        default: null,
     },
     message: {
         type: String,
@@ -25,7 +25,7 @@ module.exports = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: "user",
     },
     ...Timestamps,
 });
