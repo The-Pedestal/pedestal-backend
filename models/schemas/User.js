@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Timestamps = require("./commons/Timestamps");
 const SocialMediaSchema = require("./subdocuments/SocialMedia");
 
 const UserSchema = new mongoose.Schema({
@@ -104,8 +103,11 @@ const UserSchema = new mongoose.Schema({
     social_media: [SocialMediaSchema],
 });
 
-UserSchema.virtual("full_name").get(function () {
-    return this.first_name + " " + this.last_name;
-});
+UserSchema.virtual("full_name").get(
+    function () {
+        return this.first_name + " " + this.last_name;
+    },
+    { timestamps: true },
+);
 
 module.exports = UserSchema;
