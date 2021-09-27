@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Timestamps = require("./commons/Timestamps");
 const SocialMediaSchema = require("./subdocuments/SocialMedia");
 
 const UserSchema = new mongoose.Schema({
@@ -47,6 +46,14 @@ const UserSchema = new mongoose.Schema({
     getstream_token: {
         type: String,
         default: null,
+    },
+    is_mentor: {
+        type: Boolean,
+        default: false,
+    },
+    is_mentee: {
+        type: Boolean,
+        default: false,
     },
     tagline: {
         type: String,
@@ -99,7 +106,7 @@ const UserSchema = new mongoose.Schema({
             ref: "user_education",
         },
     ],
-    social_media: [SocialMediaSchema],
+    social_media: { SocialMediaSchema },
 });
 
 UserSchema.virtual("full_name").get(function () {
