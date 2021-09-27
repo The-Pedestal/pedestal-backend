@@ -68,6 +68,8 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    is_mentor: Boolean,
+    is_mentee: Boolean,
     skills: [String],
     workspaces: [
         {
