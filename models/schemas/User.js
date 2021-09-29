@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const Timestamps = require("./commons/Timestamps");
-const SocialMediaSchema = require("./subdocuments/SocialMedia");
+const mongoose = require('mongoose');
+const SocialMediaSchema = require('./subdocuments/SocialMedia');
 
 const UserSchema = new mongoose.Schema({
     first_name: {
@@ -19,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
         enum: {
-            values: [null, "Male", "Female", "Other"],
+            values: [null, 'Male', 'Female', 'Other'],
         },
     },
     email: {
@@ -68,42 +67,47 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    is_mentor: Boolean,
+    is_mentee: Boolean,
     skills: [String],
     workspaces: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "workspace",
+            ref: 'workspace',
         },
     ],
     interests: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "interest",
+            ref: 'interest',
         },
     ],
     experiences: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user_experience",
+            ref: 'user_experience',
         },
     ],
     projects: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user_project",
+            ref: 'user_project',
         },
     ],
     education: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user_education",
+            ref: 'user_education',
         },
     ],
-    social_media: [SocialMediaSchema],
+    social_media: SocialMediaSchema,
 });
 
-UserSchema.virtual("full_name").get(function () {
-    return this.first_name + " " + this.last_name;
-});
+UserSchema.virtual('full_name').get(
+    function () {
+        return this.first_name + ' ' + this.last_name;
+    },
+    { timestamps: true },
+);
 
 module.exports = UserSchema;
