@@ -69,6 +69,12 @@ const UserSchema = new mongoose.Schema({
         default: null,
     },
     skills: [String],
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "review",
+        },
+    ],
     workspaces: [
         {
             type: mongoose.Schema.Types.ObjectId,
