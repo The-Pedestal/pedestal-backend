@@ -100,7 +100,7 @@ const UserSchema = new mongoose.Schema({
             ref: "user_education",
         },
     ],
-    social_media: [SocialMediaSchema],
+    social_media: SocialMediaSchema,
 });
 
 UserSchema.virtual("full_name").get(
