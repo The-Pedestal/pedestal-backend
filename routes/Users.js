@@ -61,7 +61,7 @@ module.exports.init = async (app) => {
     app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentees);
 
     /** activities */
-    app.post(/users/:user/activities', UserActivitiesController.create);
+    app.post('/users/:user/activities', UserActivitiesController.create);
     app.put('/users/:user/activities/:id', UserActivitiesController.update);
     app.delete('/users/:user/activities/:id', UserActivitiesController.delete);
 };
