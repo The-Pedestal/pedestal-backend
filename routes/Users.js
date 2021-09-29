@@ -55,13 +55,17 @@ module.exports.init = async (app) => {
     app.delete('/users/:user/workspaces/:id', WorkspaceController.deleteUserWorkspace);
 
     /** mentorship */
+    /** get a list of users mentors */
     app.get('/users/:user/mentors', MentorshipController.getUserMentors);
-    app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentors);
+    /** get a users mentor */
+    app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentor);
+    /** get a users mentees */
     app.get('/users/:user/mentees', MentorshipController.getUserMentees);
-    app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentees);
+    /** show a users mentee */
+    app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentee);
 
     /** activities */
-    app.post(/users/:user/activities', UserActivitiesController.create);
+    app.post('/users/:user/activities', UserActivitiesController.create);
     app.put('/users/:user/activities/:id', UserActivitiesController.update);
     app.delete('/users/:user/activities/:id', UserActivitiesController.delete);
 };

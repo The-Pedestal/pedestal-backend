@@ -1,16 +1,17 @@
-const Models = require("../models");
-const stream = require("getstream");
-const AppConstants = require("../constants/App");
+const Models = require('../models');
+const stream = require('getstream');
+const AppConstants = require('../constants/App');
 const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 const getstream_client = stream.connect(STREAM_KEY, STREAM_SECRET);
 
+/** get a list of user mentors */
 module.exports.getUserMentors = async (req, res) => {
     const result = {};
     const mentors = await Models.Mentorship.find({
         mentee: req.params.user,
     })
-        .populate("mentor")
+        .populate('mentor')
         .exec();
 
     res.status(200);
@@ -19,14 +20,14 @@ module.exports.getUserMentors = async (req, res) => {
 
     res.send(result);
 };
-
-module.exports.showUserMentors = async (req, res) => {
+/** get user mentor */
+module.exports.showUserMentor = async (req, res) => {
     const result = {};
     const mentors = await Models.Mentorship.findOne({
         mentor: req.params.mentor,
         mentee: req.params.user,
     })
-        .populate("mentor")
+        .populate('mentor')
         .exec();
 
     res.status(200);
@@ -41,7 +42,7 @@ module.exports.getUserMentees = async (req, res) => {
     const mentors = await Models.Mentorship.find({
         mentor: req.params.user,
     })
-        .populate("mentee")
+        .populate('mentee')
         .exec();
 
     res.status(200);
@@ -51,13 +52,13 @@ module.exports.getUserMentees = async (req, res) => {
     res.send(result);
 };
 
-module.exports.showUserMentees = async (req, res) => {
+module.exports.showUserMentee = async (req, res) => {
     const result = {};
     const mentees = await Models.Mentorship.findOne({
         mentee: req.params.mentee,
         mentor: req.params.user,
     })
-        .populate("mentee")
+        .populate('mentee')
         .exec();
 
     res.status(200);
@@ -67,10 +68,11 @@ module.exports.showUserMentees = async (req, res) => {
     res.send(result);
 };
 
+//get a list of mentorships
 module.exports.get = async (req, res) => {
     const result = {};
     try {
-        const mentorships = await Models.Mentorship.find({}).populate("mentor").populate("mentee").exec();
+        const mentorships = await Models.Mentorship.find({}).populate('mentor').populate('mentee').exec();
 
         res.status(200);
         result.success = true;
@@ -90,8 +92,8 @@ module.exports.show = async (req, res) => {
         const mentorship = await Models.Mentorship.findOne({
             _id: req.params.id,
         })
-            .populate("mentor")
-            .populate("mentee")
+            .populate('mentor')
+            .populate('mentee')
             .exec();
 
         res.status(200);
