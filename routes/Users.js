@@ -56,12 +56,12 @@ module.exports.init = async (app) => {
 
     /** mentorship */
     app.get('/users/:user/mentors', MentorshipController.getUserMentors);
-    app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentors);
+    app.get('/users/:user/mentors/:mentor', MentorshipController.showUserMentor);
     app.get('/users/:user/mentees', MentorshipController.getUserMentees);
-    app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentees);
+    app.get('/users/:user/mentees/:mentee', MentorshipController.showUserMentee);
 
     /** activities */
-    app.post(/users/:user/activities', UserActivitiesController.create);
+    app.post('/users/:user/activities', UserActivitiesController.create);
     app.put('/users/:user/activities/:id', UserActivitiesController.update);
     app.delete('/users/:user/activities/:id', UserActivitiesController.delete);
 };

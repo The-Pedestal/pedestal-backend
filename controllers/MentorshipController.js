@@ -8,7 +8,7 @@ const getstream_client = stream.connect(STREAM_KEY, STREAM_SECRET);
 module.exports.getUserMentors = async (req, res) => {
     const result = {};
     const mentors = await Models.Mentorship.find({
-        mentee: req.params.user
+        mentee: req.params.user,
     })
         .populate('mentor')
         .exec();
@@ -20,11 +20,11 @@ module.exports.getUserMentors = async (req, res) => {
     res.send(result);
 };
 
-module.exports.showUserMentors = async (req, res) => {
+module.exports.showUserMentor = async (req, res) => {
     const result = {};
     const mentors = await Models.Mentorship.findOne({
         mentor: req.params.mentor,
-        mentee: req.params.user
+        mentee: req.params.user,
     })
         .populate('mentor')
         .exec();
@@ -39,7 +39,7 @@ module.exports.showUserMentors = async (req, res) => {
 module.exports.getUserMentees = async (req, res) => {
     const result = {};
     const mentors = await Models.Mentorship.find({
-        mentor: req.params.user
+        mentor: req.params.user,
     })
         .populate('mentee')
         .exec();
@@ -51,11 +51,11 @@ module.exports.getUserMentees = async (req, res) => {
     res.send(result);
 };
 
-module.exports.showUserMentees = async (req, res) => {
+module.exports.showUserMentee = async (req, res) => {
     const result = {};
     const mentees = await Models.Mentorship.findOne({
         mentee: req.params.mentee,
-        mentor: req.params.user
+        mentor: req.params.user,
     })
         .populate('mentee')
         .exec();
@@ -70,10 +70,7 @@ module.exports.showUserMentees = async (req, res) => {
 module.exports.get = async (req, res) => {
     const result = {};
     try {
-        const mentorships = await Models.Mentorship.find({})
-            .populate('mentor')
-            .populate('mentee')
-            .exec();
+        const mentorships = await Models.Mentorship.find({}).populate('mentor').populate('mentee').exec();
 
         res.status(200);
         result.success = true;
@@ -100,7 +97,6 @@ module.exports.show = async (req, res) => {
         res.status(200);
         result.success = true;
         result.data = mentorship;
-
     } catch (error) {
         res.status(500);
         result.success = false;
@@ -111,15 +107,19 @@ module.exports.show = async (req, res) => {
 
 module.exports.updateMentorshipAgreementStatus = async (req, res) => {
     const result = {};
-    const mentorship = await Models.Mentorship.findOneAndUpdate({
-        mentor: req.params.user,
-        mentee: req.params.mentee,
-        _id: req.params.id
-    }, {
-        mentor_agreement_status: req.body.mentor_agreement_status,
-    }, {
-        returnOriginal: false
-    });
+    const mentorship = await Models.Mentorship.findOneAndUpdate(
+        {
+            mentor: req.params.user,
+            mentee: req.params.mentee,
+            _id: req.params.id,
+        },
+        {
+            mentor_agreement_status: req.body.mentor_agreement_status,
+        },
+        {
+            returnOriginal: false,
+        },
+    );
 
     result.success = true;
     result.data = mentorship;
@@ -153,7 +153,7 @@ module.exports.create = async (req, res) => {
             new_mentorship.mentee_agreement_status = AppConstants.MENTEE_AGREEMENT_ACCEPTED;
             break;
         default:
-            throw 'can\'t failed to identify applicant role';
+            throw "can't failed to identify applicant role";
     }
 
     Models.Mentorship.create(new_mentorship, async (error, mentorship) => {
@@ -177,10 +177,10 @@ module.exports.update = async (req, res) => {
     const mentorship = await Models.Mentorship.findOne({
         _id: req.params.id,
         ...(role === AppConstants.MENTOR && {
-            mentor: user
+            mentor: user,
         }),
         ...(role === AppConstants.MENTEE && {
-            mentee: user
+            mentee: user,
         }),
     });
 
@@ -192,21 +192,27 @@ module.exports.update = async (req, res) => {
             mentorship.mentee_agreement_status = req.body.agreement_status;
             break;
         default:
-            throw 'can\'t failed to identify the user\'s role';
+            throw "can't failed to identify the user's role";
     }
 
-    if (mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_ACCEPTED &&
-        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_ACCEPTED) {
+    if (
+        mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_ACCEPTED &&
+        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_ACCEPTED
+    ) {
         mentorship.status = AppConstants.MENTORSHIP_ACCEPTED;
     }
 
-    if (mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_PENDING ||
-        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_PENDING) {
+    if (
+        mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_PENDING ||
+        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_PENDING
+    ) {
         mentorship.status = AppConstants.MENTORSHIP_PENDING;
     }
 
-    if (mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_DECLINED ||
-        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_DECLINED) {
+    if (
+        mentorship.mentor_agreement_status === AppConstants.MENTOR_AGREEMENT_DECLINED ||
+        mentorship.mentee_agreement_status === AppConstants.MENTEE_AGREEMENT_DECLINED
+    ) {
         mentorship.status = AppConstants.MENTORSHIP_DECLINED;
     }
 
