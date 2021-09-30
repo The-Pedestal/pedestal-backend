@@ -101,13 +101,11 @@ const UserSchema = new mongoose.Schema({
         },
     ],
     social_media: SocialMediaSchema,
-});
+},  { timestamps: true });
 
 UserSchema.virtual('full_name').get(
     function () {
         return this.first_name + ' ' + this.last_name;
-    },
-    { timestamps: true },
-);
+    });
 
 module.exports = UserSchema;
