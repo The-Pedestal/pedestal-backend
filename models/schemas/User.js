@@ -48,6 +48,11 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        pubnub_uuid: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         tagline: {
             type: String,
             default: null,
