@@ -1,5 +1,6 @@
 const stream = require("getstream");
 const Models = require("../models");
+const crypto = require("crypto");
 const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 
@@ -65,7 +66,12 @@ module.exports.create = async (req, res) => {
     const result = {};
     let error_message = false;
 
-    await Models.User.create(req.body, async (error, user) => {
+    const user = {
+        ...req.body,
+        pubnub_uuid: crypto.randomBytes(16).toString("hex")
+    };
+
+    await Models.User.create(user, async (error, user) => {
         try {
             if (!error) {
                 const client = stream.connect(STREAM_KEY, STREAM_SECRET);
