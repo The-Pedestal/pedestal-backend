@@ -12,6 +12,10 @@
     "dependencies": {
         "getstream": "^7.2.10",
         "httperr": "^1.0.0",
-        "mongoose": "^5.13.7"
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.13.7",
+        "request": "^2.88.2",
+        "uuid4": "^2.0.2",
+        "uuidv4": "^6.2.12"
     }
 }
