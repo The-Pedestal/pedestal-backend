@@ -16,6 +16,11 @@ function generateAccessToken(callback, permissions) {
     }, (err, token) => callback(err, token));
 };
 
+module.exports.authorizeCalendly = (req, res) => {
+    console.log(req.body);
+    res.send(200);
+};
+
 module.exports.getAuthenticationToken = (req, res) => {
     generateAccessToken((err, token) => {
 

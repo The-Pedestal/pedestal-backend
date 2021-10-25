@@ -7,4 +7,5 @@ module.exports.init = async (app) => {
 
     app.post("/meetings", MeetingController.createMeeting);
     app.get("/meetings/auth", MeetingController.getAuthenticationToken);
+    app.get("/meetings/authorize/calendly", MeetingController.authorizeCalendly);
 };
