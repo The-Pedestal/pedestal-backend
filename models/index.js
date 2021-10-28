@@ -7,15 +7,16 @@ const UserEducationSchema = require("./schemas/UserEducation.js");
 const UserProjectSchema = require("./schemas/UserProject.js");
 const UserReviewSchema = require("./schemas/UserReview.js");
 const WorkspaceSchema = require("./schemas/Workspace.js");
-const AchievementsSchema = require("./schemas/Achievements.js");
+const AchievementSchema = require("./schemas/Achievement.js");
 const MentorshipSchema = require("./schemas/Mentorship.js");
 const WorkspaceScheduleSchema = require("./schemas/WorkspaceSchedule");
 const UserActivitySchema = require("./schemas/UserActivity");
+const TransactionSchema = require("./schemas/Transaction.js");
 
 module.exports = {
     UserEducation: mongoose.model("user_education", UserEducationSchema),
     UserProject: mongoose.model("user_project", UserProjectSchema),
-    Achievement: mongoose.model("achievement", AchievementsSchema),
+    Achievement: mongoose.model("achievement", AchievementSchema),
     Interest: mongoose.model("interest", InterestSchema),
     UserReview: mongoose.model("user_review", UserReviewSchema),
     Mentorship: mongoose.model("mentorship", MentorshipSchema),
@@ -25,4 +26,5 @@ module.exports = {
     UserExperience: mongoose.model("user_experience", UserExperienceSchema),
     Workspace: mongoose.model("workspace", WorkspaceSchema),
     WorkspaceSchedule: mongoose.model("workspace_schedule", WorkspaceScheduleSchema),
+    Transaction: mongoose.model("transaction", TransactionSchema)
 };
