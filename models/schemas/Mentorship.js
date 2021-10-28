@@ -15,9 +15,17 @@ module.exports = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "user",
     },
+    mentor_agreement_status: {
+        type: String,
+        value: ["pending", "accepted", "declined"]
+    },
+    mentee_agreement_status: {
+        type: String,
+        value: ["pending", "accepted", "declined"]
+    },
     status: {
         type: String,
         default: "pending",
         values: ["pending", "accepted", "declined", "completed"],
     },
-},  { timestamps: true });
+}, { timestamps: true });

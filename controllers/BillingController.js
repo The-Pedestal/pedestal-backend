@@ -2,40 +2,69 @@ const Models = require("../models");
 const axios = require("axios");
 
 module.exports.handlePaymentOutcome = async (req, res) => {
+    const { notificationItems, live } = req.body;
+    notificationItems.forEach(async ({ NotificationRequestItem }) => {
+        const transaction_id = NotificationRequestItem.merchantReference;
+        await Models.Transaction.findByIdAndUpdate(transaction_id, {
+            $push: {
+                notifications: NotificationRequestItem
+            }
+        });
+    });
 
+    res.send(200);
 };
 
 module.exports.createDropInSession = async (req, res) => {
-    const config = {
-        headers: {
-
-            "x-API-key": process.env.ADYEN_API_KEY,
-            "Content-Type": "application/json"
-        }
-    };
-
-    const data = {
-        merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT,
-        amount: {
-            value: req.body.amount,
-            currency: req.body.currency
-        },
-        reference: "12324abc",
-        countryCode: "NL",
-        returnUrl: "http://localhost/billing/result"
-    };
-
-    axios.post(`${process.env.ADYEN_API}/sessions`, data, config)
-        .then(function (response) {
+    Models.Transaction.create({
+        amount: req.body.amount,
+        currency: "USD",
+        mentorship: req.body.mentorship,
+        user: req.body.user,
+        return_url: process.env.ADYEN_WEBHOOK_HANDLER_URL
+    }, async (error, transaction) => {
+        if (error) {
             res.send({
-                success: true,
-                data: {
-                    sessionData: response.data.sessionData,
-                }
+                success: false,
+                error: error.message
             });
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        });
+        } else {
+            axios.post(`${process.env.ADYEN_API}/sessions`, {
+                merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT,
+                amount: {
+                    value: transaction.amount,
+                    currency: transaction.currency
+                },
+                reference: transaction._id.toString(),
+                shopperInteraction: "Ecommerce",
+                returnUrl: transaction.return_url
+            }, {
+                headers: {
+                    "x-API-key": process.env.ADYEN_API_KEY,
+                    "Content-Type": "application/json"
+                }
+            }).then(({ data }) => {
+                Models.Transaction.findByIdAndUpdate(transaction._id, {
+                    session_data: data.sessionData,
+                    session_id: data.id,
+                    expires_at: data.expiresAt,
+                }, () => {
+                    res.send({
+                        success: true,
+                        data: {
+                            sessionData: data.sessionData,
+                            id: data.id,
+                            expiresAt: data.expiresAt,
+                        }
+                    });
+                });
+
+            }).catch((axios_error) => {
+                res.send({
+                    success: false,
+                    error: axios_error.message
+                });
+            });
+        }
+    });
 };
