@@ -14,7 +14,7 @@ module.exports.handlePaymentOutcome = async (req, res) => {
         });
     });
 
-    res.sendStatus(200);
+    res.send('[accepted]');
 };
 
 module.exports.createDropInSession = async (req, res) => {
