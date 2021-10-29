@@ -5,10 +5,12 @@ const TransactionSchema = new mongoose.Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "user",
+        required: true,
     },
     mentorship: {
         type: Schema.Types.ObjectId,
         ref: "mentorship",
+        required: true,
     },
     session_id: {
         type: String,

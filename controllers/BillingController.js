@@ -12,7 +12,7 @@ module.exports.handlePaymentOutcome = async (req, res) => {
         });
     });
 
-    res.send(200);
+    res.sendStatus(200);
 };
 
 module.exports.createDropInSession = async (req, res) => {
