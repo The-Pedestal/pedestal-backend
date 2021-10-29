@@ -5,7 +5,9 @@ module.exports.handlePaymentOutcome = async (req, res) => {
     const { notificationItems, live } = req.body;
     notificationItems.forEach(async ({ NotificationRequestItem }) => {
         const transaction_id = NotificationRequestItem.merchantReference;
-        await Models.Transaction.findByIdAndUpdate(transaction_id, {
+        await Models.Transaction.findOneAndUpdate({
+            session_id: NotificationRequestItem.additionalData.checkoutSessionId
+        }, {
             $push: {
                 notifications: NotificationRequestItem
             }
