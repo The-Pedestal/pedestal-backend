@@ -1,37 +1,35 @@
 const stream = require("getstream");
 const Models = require("../models");
-const crypto = require("crypto");
 const STREAM_KEY = process.env.GETSTREAM_KEY;
 const STREAM_SECRET = process.env.GETSTREAM_SECRET;
 
 module.exports.get = async (req, res) => {
-    const filter = {};
-    const {
-        cognito_sub,
-        interests,
-        exclude_ids
-    } = req.query;
+    try {
+        const {
+            cognito_sub,
+            interests,
+            exclude_ids,
+            mentor_only,
+        } = req.query;
 
-    if (cognito_sub) {
-        filter.cognito_sub = cognito_sub;
-    }
-
-    if (exclude_ids) {
-        filter._id = {
-            $nin: exclude_ids.split(","),
+        const filter = {
+            ...(cognito_sub && { cognito_sub: cognito_sub }),
+            ...(exclude_ids && { _id: { $nin: exclude_ids.split(",") } }),
+            ...(interests && { interests: { $in: interests.split(",") } }),
+            ...(mentor_only && { is_currently_mentoring: { $eq: true }, is_opt_out_mentoring: { $eq: false } })
         };
-    }
 
-    if (interests) {
-        filter.interests = {
-            $in: interests.split(","),
-        };
+        res.send({
+            success: true,
+            data: await Models.User.find(filter),
+        });
+    } catch (error) {
+        res.status(500);
+        res.send({
+            success: false,
+            error: error.message
+        });
     }
-
-    res.send({
-        success: true,
-        data: await Models.User.find(filter),
-    });
 };
 
 module.exports.show = async (req, res) => {
@@ -68,7 +66,6 @@ module.exports.create = async (req, res) => {
 
     const user = {
         ...req.body,
-        pubnub_uuid: crypto.randomBytes(16).toString("hex")
     };
 
     await Models.User.create(user, async (error, user) => {
