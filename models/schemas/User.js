@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MentoringSetting = require("./subdocuments/MentoringSetting");
 const SocialMediaSchema = require('./subdocuments/SocialMedia');
 
 const UserSchema = new mongoose.Schema(
@@ -48,10 +49,9 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        pubnub_uuid: {
-            type: String,
-            required: true,
-            unique: true,
+        industries: {
+            type: [String],
+            default: null,
         },
         tagline: {
             type: String,
@@ -73,8 +73,14 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        is_currently_mentoring: Boolean,
-        is_opt_out_mentoring: Boolean,
+        is_currently_mentoring: {
+            type: Boolean,
+            default: false,
+        },
+        is_opt_out_mentoring: {
+            type: Boolean,
+            default: true,
+        },
         skills: [String],
         workspaces: [
             {
@@ -107,6 +113,7 @@ const UserSchema = new mongoose.Schema(
             },
         ],
         social_media: SocialMediaSchema,
+        mentoring_setting: MentoringSetting,
     },
     { timestamps: true },
 );
