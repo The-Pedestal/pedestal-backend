@@ -2,6 +2,7 @@ const Models = require("../models");
 const jwt = require("jsonwebtoken");
 const uuid4 = require("uuid4");
 const request = require("request");
+const axios = require("axios");
 const { VIDEOSDK_API_KEY, VIDEOSDK_SECRET, VIDEOSDK_API_ENDPOINT } = process.env;
 
 function generateAccessToken(callback, permissions) {
@@ -16,14 +17,26 @@ function generateAccessToken(callback, permissions) {
     }, (err, token) => callback(err, token));
 };
 
-module.exports.authorizeCalendly = (req, res) => {
-    console.log(req.body);
-    res.send(200);
+module.exports.authorizeCalendly = async (req, res) => {
+    console.log("hi");
+    const { code, id } = req.query;
+    axios.post(`${process.env.CALENDLY_API_URL}/oauth/token`, {
+        grant_type: "authorization_code",
+        client_id: process.env.CALENDLY_CLIENT_ID,
+        client_secret: process.env.CALENDLY_CLIENT_SECRET,
+        code: code,
+        redirect_uri: `${process.env.CALENDLY_REDIRECT_URL}?id=${id}`
+    }).then(async (response) => {
+        const { data } = response;
+        await Models.User.findByIdAndUpdate(id, { calendly_authorization_object: data }, { upsert: true });
+        return res.redirect(`${process.env.APP_URL}/oauth/calendly/result?success`);
+    }).catch(err => {
+        return res.redirect(`${process.env.APP_URL}/oauth/calendly/result?failed`);
+    });
 };
 
 module.exports.getAuthenticationToken = (req, res) => {
     generateAccessToken((err, token) => {
-
         res.send({
             success: true,
             data: {

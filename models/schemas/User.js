@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const CalendlyAuthorizationObject = require("./subdocuments/CalendlyAuthorizationObject");
 const MentoringSetting = require("./subdocuments/MentoringSetting");
 const SocialMediaSchema = require('./subdocuments/SocialMedia');
 
@@ -112,6 +113,7 @@ const UserSchema = new mongoose.Schema(
                 ref: 'user_education',
             },
         ],
+        calendly_authorization_object: CalendlyAuthorizationObject,
         social_media: SocialMediaSchema,
         mentoring_setting: MentoringSetting,
     },
