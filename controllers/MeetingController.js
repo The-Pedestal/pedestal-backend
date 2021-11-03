@@ -18,9 +18,8 @@ function generateAccessToken(callback, permissions) {
 };
 
 module.exports.authorizeCalendly = async (req, res) => {
-    console.log("hi");
     const { code, id } = req.query;
-    axios.post(`${process.env.CALENDLY_API_URL}/oauth/token`, {
+    axios.post(`${process.env.CALENDLY_AUTH_URL}/oauth/token`, {
         grant_type: "authorization_code",
         client_id: process.env.CALENDLY_CLIENT_ID,
         client_secret: process.env.CALENDLY_CLIENT_SECRET,
@@ -50,7 +49,7 @@ module.exports.createMeeting = async (req, res) => {
     generateAccessToken((err, token) => {
         const options = {
             method: "POST",
-            url: "https://api.videosdk.live/v1/meetings",
+            url: `${process.env.VIDEOSDK_API_ENDPOINT}/v1/meetings`,
             headers: { authorization: token },
         };
         request(options, function (error, response, body) {
