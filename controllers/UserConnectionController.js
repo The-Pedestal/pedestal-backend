@@ -16,10 +16,7 @@ module.exports.get = async (req, res) => {
             ],
             ...(connected_user && { $and: [{ connected_user: connected_user }] }),
             status: {
-                $in: [
-                    ConnectionStatus.USER_CONNECTION_PENDING,
-                    ConnectionStatus.USER_CONNECTION_ACCEPTED,
-                ],
+                $in: ["pending", "accepted"],
             },
         })
             .populate("connected_user")
@@ -31,8 +28,8 @@ module.exports.get = async (req, res) => {
         result.data = connections.map((c) => ({
             _id: c._id,
             status: c.status,
-            from: c.user._id,
-            user: c.user._id.equals(req.params.user)
+            actor: c.user._id,
+            connected_user: c.user._id.equals(req.params.user)
                 ? c.connected_user
                 : c.user,
         }));
