@@ -1,6 +1,6 @@
 {
     "name": "pedestal-backend",
-    "version": "3.10.9",
+    "version": "3.11.9",
     "description": "",
     "main": "index.js",
     "scripts": {
