@@ -40,7 +40,7 @@ module.exports.createWorkspace = async (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
-    const workspace = await Models.Workspace.findByIdAndUpdate(req.params.id, req.params.body);
+    const workspace = await Models.Workspace.findByIdAndUpdate(req.params.id, req.body);
     res.send({
         success:true,
         data: workspace
