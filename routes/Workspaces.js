@@ -7,13 +7,9 @@ module.exports.init = async (app) => {
 
     ConnectionUtil.connect();
 
+    app.post('/workspaces', WorkspaceController.createWorkspace);
     app.get('/workspaces', WorkspaceController.get);
     app.get('/workspaces/:id', WorkspaceController.show);
-
-    /**
-     * @see /routes/Users.js for creating a workspace
-     * */
-
     app.put('/workspaces/:id', WorkspaceController.update);
     app.delete('/workspaces/:id', WorkspaceController.delete);
 
@@ -30,4 +26,4 @@ module.exports.init = async (app) => {
     app.delete('/workspaces/:workspace/schedules/:id', WorkspaceScheduleController.delete);
 
 
-}
+};
