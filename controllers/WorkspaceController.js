@@ -29,36 +29,22 @@ module.exports.show = async (req, res) => {
     res.send(result);
 };
 
-module.exports.update = async (req, res) => {
-    const result = {};
-
-    await Models.Workspace.findOneAndUpdate({
-        _id: req.params.id
-    }, {
-        title: req.body.title,
-        $addToSet: {
-            notes: req.body.notes
-        },
-        $addToSet: {
-            achievements: req.body.achievements
-        },
-        $addToSet: {
-            members: req.body.members
+module.exports.createWorkspace = async (req, res) => {
+    Models.Workspace.create(req.body, async (error, workspace) => {
+        if (error) {
+            res.send({ success: false, error: error });
+        } else {
+            res.send({ success: true, data: workspace });
         }
     });
+};
 
-    const workspace = await Models.Workspace.findOne({
-        _id: req.params.id,
-    })
-        .populate('members')
-        .populate('achievements.achievement')
-        .exec();
-
-    res.status(200);
-    result.success = true;
-    result.data = workspace;
-
-    res.send(result);
+module.exports.update = async (req, res) => {
+    const workspace = await Models.Workspace.findByIdAndUpdate(req.params.id, req.params.body);
+    res.send({
+        success:true,
+        data: workspace
+    });
 };
 
 module.exports.delete = async (req, res) => {
@@ -104,30 +90,6 @@ module.exports.showUserWorkspace = async (req, res) => {
     result.success = true;
     result.data = workspace;
     res.send(result);
-};
-
-module.exports.createUserWorkspace = async (req, res) => {
-    const result = {};
-    Models.Workspace.create({
-        ...req.body,
-        owner: req.params.user,
-    }, async (error, workspace) => {
-        await Models.User.findByIdAndUpdate(req.params.user, {
-            $addToSet: {
-                workspaces: workspace._id
-            }
-        });
-        const new_workspace = await Models.Workspace.findById(workspace._id)
-            .populate('members')
-            .populate('achievements.achievement')
-            .exec();
-
-        res.status(200);
-        result.success = true;
-        result.data = new_workspace;
-
-        res.send(result);
-    });
 };
 
 module.exports.updateUserWorkspace = async (req, res) => {

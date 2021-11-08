@@ -50,7 +50,6 @@ module.exports.init = async (app) => {
     /** workspace */
     app.get('/users/:user/workspaces', WorkspaceController.getUserWorkspace);
     app.get('/users/:user/workspaces/:id', WorkspaceController.showUserWorkspace);
-    app.post('/users/:user/workspaces', WorkspaceController.createUserWorkspace);
     app.put('/users/:user/workspaces/:id', WorkspaceController.updateUserWorkspace);
     app.delete('/users/:user/workspaces/:id', WorkspaceController.deleteUserWorkspace);
 

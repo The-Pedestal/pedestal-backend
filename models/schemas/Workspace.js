@@ -7,12 +7,12 @@ module.exports = new Schema({
         type: String,
         required: true,
     },
-    owner: {
+    mentor: {
         type: Schema.Types.ObjectId,
         ref: "user",
         required: true,
     },
-    members: [
+    mentees: [
         {
             type: Schema.Types.ObjectId,
             ref: "user",
@@ -46,5 +46,13 @@ module.exports = new Schema({
             ...Timestamps,
         },
     ],
+    max_storage_in_gb: {
+        type: Number,
+        default: 10
+    },
+    storage_used_in_gb: {
+        type: Number,
+        default: 0,
+    },
     ...Timestamps,
 });
