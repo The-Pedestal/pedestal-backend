@@ -1,13 +1,12 @@
 const Models = require('../models');
 
 module.exports.get = async (req, res) => {
-    /**
-     * @TODO support filtering by adding query string as keywords
-     */
+    const { employment_type } = req.query;
     res.send({
         success: true,
         data: await Models.UserExperience.find({
             user: req.params.user,
+            ...(employment_type && { employment_type: employment_type }),
         }),
     });
 };

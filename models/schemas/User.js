@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const CalendlyAuthorizationObject = require("./subdocuments/CalendlyAuthorizationObject");
 const MentoringSetting = require("./subdocuments/MentoringSetting");
-const SocialMediaSchema = require('./subdocuments/SocialMedia');
+const SocialMediaSchema = require("./subdocuments/SocialMedia");
 
 const UserSchema = new mongoose.Schema(
     {
@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: null,
             enum: {
-                values: [null, 'Male', 'Female', 'Other'],
+                values: [null, "Male", "Female", "Other"],
             },
         },
         email: {
@@ -86,31 +86,31 @@ const UserSchema = new mongoose.Schema(
         workspaces: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'workspace',
+                ref: "workspace",
             },
         ],
         interests: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'interest',
+                ref: "interest",
             },
         ],
         experiences: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'user_experience',
+                ref: "user_experience",
             },
         ],
         projects: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'user_project',
+                ref: "user_project",
             },
         ],
         education: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'user_education',
+                ref: "user_education",
             },
         ],
         calendly_authorization_object: CalendlyAuthorizationObject,
@@ -120,8 +120,8 @@ const UserSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-UserSchema.virtual('full_name').get(function () {
-    return this.first_name + ' ' + this.last_name;
+UserSchema.virtual("full_name").get(function () {
+    return this.first_name + " " + this.last_name;
 });
 
 module.exports = UserSchema;
