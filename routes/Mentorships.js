@@ -9,4 +9,6 @@ module.exports.init = async (app) => {
     app.post("/mentorships", MentorshipController.create);
     app.put("/mentorships/:id", MentorshipController.update);
     app.delete("/mentorships/:id", MentorshipController.delete);
+
+    app.post("/mentorships/:id/answer", MentorshipController.answerEngagementQuestions);
 };

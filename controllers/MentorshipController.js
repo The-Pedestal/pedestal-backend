@@ -136,7 +136,9 @@ module.exports.create = async (req, res) => {
         applicant: user,
         mentor: null,
         mentee: null,
+        questions: AppConstants.DEFAULT_ENGAGEMENT_QUESTIONS,
     };
+
     /** apply the '@var user' as either mentor or mentee */
     switch (applying_as) {
         case AppConstants.MENTEE:
@@ -173,11 +175,10 @@ module.exports.create = async (req, res) => {
                 verb: `mentorship_request`,
                 object: await gs_client.collections.add('mentorship', null, {
                     mentorship_id: mentorship._id,
-                    message: `${applicant.full_name} ${
-                        !mentor.is_currently_mentoring
-                            ? 'is requesting you to be their mentor'
-                            : 'wants to book you as a mentor'
-                    }`,
+                    message: `${applicant.full_name} ${!mentor.is_currently_mentoring
+                        ? 'is requesting you to be their mentor'
+                        : 'wants to book you as a mentor'
+                        }`,
                     link: `/mentorships`,
                 }),
             });
@@ -194,7 +195,6 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
-    const result = {};
     const status = req.body.status;
     const mentorship = await Models.Mentorship.findOne({ _id: req.params.id });
     const mentor = await Models.User.findById(mentorship.mentor);
@@ -214,7 +214,6 @@ module.exports.update = async (req, res) => {
                 message += 'has declined your mentor request';
                 break;
         }
-
         await gs_client.feed('notifications', mentorship.mentee).addActivity({
             actor: await gs_client.user(mentorship.mentor).get(),
             verb: `mentorship_request`,
@@ -226,12 +225,37 @@ module.exports.update = async (req, res) => {
         });
     }
 
-    result.success = true;
-    result.data = mentorship;
-
-    res.send(result);
+    res.send({
+        success: true,
+        data: mentorship,
+    });
 };
 
 module.exports.delete = async (req, res) => {
     res.send();
+};
+
+module.exports.answerEngagementQuestions = async (req, res) => {
+    const { id } = req.params;
+    const { answers } = req.body;
+    const { questions } = await Models.Mentorship.findById(id);
+
+    const answered_questions = questions.map(question => {
+        const answer = answers
+            .find(answer => answer.id === question._id.toString())
+            ?.answer;
+        question.answer = answer;
+        return question;
+    });
+
+    const mentorship = await Models.Mentorship.findByIdAndUpdate(id, {
+        questions: answered_questions
+    }, {
+        returnOriginal: false,
+    });
+
+    res.send({
+        success: true,
+        data: mentorship,
+    });
 };
