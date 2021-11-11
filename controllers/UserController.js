@@ -146,15 +146,11 @@ module.exports.suggestConnectionToUser = async (req, res) => {
     const user = await Models.User.findById(req.params.id);
     const user_id = user._id.toString();
 
-    const connections = await Models.UserConnection.find({
-        $or: [{
-            user: user._id,
-        },
-        {
-            connected_user: user._id,
-        },
-        ],
-    }).select(["connected_user", "user"]);
+    const connections = await Models.UserConnection
+        .find({ $or: [{ user: user._id }, { connected_user: user._id }] })
+        .populate("experiences")
+        .populate("interests")
+        .select(["connected_user", "user"]);
 
     res.send({
         success: true,
