@@ -41,12 +41,13 @@ module.exports.show = async (req, res) => {
         const user = await Models.User.findOne({
             _id: req.params.id,
         })
-            .populate("interests")
-            .populate("experiences")
-            .populate("projects")
-            .populate("education")
-            .populate("connections", ["connected_user", "_id", "status"])
-            .exec();
+        .populate("interests")
+        .populate("experiences")
+        .populate("projects")
+        .populate("education")
+        .populate("connections", ["connected_user", "_id", "status"])
+        .populate("mentor_detail")
+        .exec();
 
         res.status(200);
         result.success = true;

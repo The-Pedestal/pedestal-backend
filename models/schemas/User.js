@@ -112,7 +112,10 @@ const UserSchema = new mongoose.Schema(
         ],
         calendly_authorization_object: CalendlyAuthorizationObject,
         social_media: SocialMediaSchema,
-        mentoring_setting: MentoringSetting,
+        mentor_detail: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "mentor_detail",
+        },
     },
     { timestamps: true },
 );
