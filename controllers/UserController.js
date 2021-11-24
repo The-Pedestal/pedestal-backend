@@ -41,13 +41,13 @@ module.exports.show = async (req, res) => {
         const user = await Models.User.findOne({
             _id: req.params.id,
         })
-        .populate("interests")
-        .populate("experiences")
-        .populate("projects")
-        .populate("education")
-        .populate("connections", ["connected_user", "_id", "status"])
-        .populate("mentor_detail")
-        .exec();
+            .populate("interests")
+            .populate("experiences")
+            .populate("projects")
+            .populate("education")
+            .populate("connections", ["connected_user", "_id", "status"])
+            .populate("mentor_detail")
+            .exec();
 
         res.status(200);
         result.success = true;
@@ -143,30 +143,37 @@ module.exports.delete = async (req, res) => {
     res.send({});
 };
 
-module.exports.suggestConnectionToUser = async (req, res) => {
+module.exports.suggesstToUser = async (req, res) => {
     const user = await Models.User.findById(req.params.id);
     const user_id = user._id.toString();
-
     const connections = await Models.UserConnection
         .find({ $or: [{ user: user._id }, { connected_user: user._id }] })
         .populate("experiences")
         .populate("interests")
         .select(["connected_user", "user"]);
 
+    const suggested_connections = await Models.User.find({
+        _id: {
+            $nin: [
+                ...connections.map((c) => c.connected_user.toString() === user_id ? c.user : c.connected_user),
+                user_id,
+            ],
+        },
+        interests: {
+            $in: user.interests,
+        },
+    });
+
+    const suggested_mentors = await Models.User.find({
+        is_currently_mentoring: true,
+        is_opt_out_mentoring: false,
+    });
+
     res.send({
         success: true,
-        data: await Models.User.find({
-            _id: {
-                $nin: [
-                    ...connections.map((c) =>
-                        c.connected_user.toString() === user_id ? c.user : c.connected_user
-                    ),
-                    user_id,
-                ],
-            },
-            interests: {
-                $in: user.interests,
-            },
-        }),
+        data: {
+            connections: suggested_connections,
+            mentors: suggested_mentors
+        },
     });
 };

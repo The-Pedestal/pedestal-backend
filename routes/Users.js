@@ -18,7 +18,7 @@ module.exports.init = async (app) => {
     app.put("/users/:id", UserController.update);
     app.delete("/users/:id", UserController.delete);
 
-    app.get("/users/:id/suggest", UserController.suggestConnectionToUser);
+    app.get("/users/:id/suggest", UserController.suggesstToUser);
 
     /** mentorship detail */
     app.get("/users/:user/mentor-detail", MentorDetailController.getMentorshipDetail);
