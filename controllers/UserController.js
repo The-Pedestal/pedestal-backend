@@ -143,37 +143,50 @@ module.exports.delete = async (req, res) => {
     res.send({});
 };
 
-module.exports.suggesstToUser = async (req, res) => {
+module.exports.suggestToUser = async (req, res) => {
     const user = await Models.User.findById(req.params.id);
+    const { type } = req.query;
     const user_id = user._id.toString();
-    const connections = await Models.UserConnection
-        .find({ $or: [{ user: user._id }, { connected_user: user._id }] })
-        .populate("experiences")
-        .populate("interests")
-        .select(["connected_user", "user"]);
 
-    const suggested_connections = await Models.User.find({
-        _id: {
-            $nin: [
-                ...connections.map((c) => c.connected_user.toString() === user_id ? c.user : c.connected_user),
-                user_id,
-            ],
-        },
-        interests: {
-            $in: user.interests,
-        },
-    });
+    let result = {
+        success: false,
+        data: null
+    };
 
-    const suggested_mentors = await Models.User.find({
-        is_currently_mentoring: true,
-        is_opt_out_mentoring: false,
-    });
+    switch (type) {
+        case "connection":
+            const connections = await Models.UserConnection
+                .find({ $or: [{ user: user._id }, { connected_user: user._id }] })
+                .populate("experiences")
+                .populate("interests")
+                .select(["connected_user", "user"]);
+            result.data = await Models.User.find({
+                _id: {
+                    $nin: [
+                        ...connections.map((c) => c.connected_user.toString() === user_id ? c.user : c.connected_user),
+                        user_id,
+                    ],
+                },
+                interests: { $in: user.interests },
+            });
 
-    res.send({
-        success: true,
-        data: {
-            connections: suggested_connections,
-            mentors: suggested_mentors
-        },
-    });
+            break;
+
+        case "mentor":
+            result.data = await Models.User.find({
+                _id: { $neq: user._id },
+                is_currently_mentoring: true,
+                is_opt_out_mentoring: false,
+            });
+
+            break;
+
+        default:
+            result.success = false;
+            result.error = "Invalid type sent";
+
+            break;
+    }
+
+    res.send(result);
 };
