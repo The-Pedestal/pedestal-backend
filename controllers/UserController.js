@@ -174,7 +174,7 @@ module.exports.suggestToUser = async (req, res) => {
 
         case "mentor":
             result.data = await Models.User.find({
-                _id: { $neq: user._id },
+                _id: { $ne: user._id },
                 is_currently_mentoring: true,
                 is_opt_out_mentoring: false,
             });
