@@ -160,6 +160,7 @@ module.exports.suggestToUser = async (req, res) => {
                 .populate("experiences")
                 .populate("interests")
                 .select(["connected_user", "user"]);
+            result.success = true;
             result.data = await Models.User.find({
                 _id: {
                     $nin: [
@@ -173,6 +174,7 @@ module.exports.suggestToUser = async (req, res) => {
             break;
 
         case "mentor":
+            result.success = true;
             result.data = await Models.User.find({
                 _id: { $ne: user._id },
                 is_currently_mentoring: true,
