@@ -116,18 +116,13 @@ module.exports.update = async (req, res) => {
 
             /** notify the initiating user that the connection request has been accepted */
             await gs_client.feed("notifications", connection.user).addActivity({
-                actor: await gs_client
-                    .user(connection.connected_user._id)
-                    .get(),
+                actor: await gs_client.user(connection.connected_user._id).get(),
                 verb: `connection_${ConnectionStatus.USER_CONNECTION_ACCEPTED}`,
-                object: await gs_client.collections.add(
-                    "user_connection",
-                    null,
-                    {
-                        connection: connection._id,
-                        message: `${connection.connected_user.full_name} accepted your connection request.`,
-                        link: `profile/${connection.connected_user._id}`,
-                    }
+                object: await gs_client.collections.add("user_connection", null, {
+                    connection: connection._id,
+                    message: `${connection.connected_user.full_name} accepted your connection request.`,
+                    link: `profile/${connection.connected_user._id}`,
+                }
                 ),
             });
         }

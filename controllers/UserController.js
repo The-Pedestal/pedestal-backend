@@ -164,7 +164,7 @@ module.exports.suggestToUser = async (req, res) => {
             result.data = await Models.User.find({
                 _id: {
                     $nin: [
-                        ...connections.map((c) => c.connected_user.toString() === user_id ? c.user : c.connected_user),
+                        ...connections.map((c) => c.connected_user?.toString() === user_id ? c.user : c.connected_user),
                         user_id,
                     ],
                 },
