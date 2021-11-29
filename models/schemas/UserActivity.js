@@ -12,7 +12,7 @@ module.exports = new Schema({
         required: true,
     },
     media: {
-        type: String,
+        type: Object,
         default: null,
     },
     verb: {
@@ -27,5 +27,4 @@ module.exports = new Schema({
         type: Schema.Types.ObjectId,
         ref: "user",
     },
-    ...Timestamps,
-});
+}, { timestamps: true });
