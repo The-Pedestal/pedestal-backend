@@ -44,7 +44,8 @@ module.exports.show = async (req, res) => {
             .populate("interests")
             .populate("experiences")
             .populate("projects")
-            .populate("education")
+            .populate("educations")
+            .populate("skills", ["name"])
             .populate("connections", ["connected_user", "_id", "status"])
             .populate("mentor_detail")
             .exec();
@@ -94,7 +95,7 @@ module.exports.create = async (req, res) => {
                 result.data = await Models.User.findById(user_id)
                     .populate("interests")
                     .populate("experiences")
-                    .populate("education")
+                    .populate("educations")
                     .populate("projects");
             } else {
                 error_message = error.message;
@@ -128,7 +129,7 @@ module.exports.update = async (req, res) => {
         result.data = result.data = await Models.User.findById(req.params.id)
             .populate("interests")
             .populate("experiences")
-            .populate("education")
+            .populate("educations")
             .populate("projects");
     } catch (error) {
         res.status(500);

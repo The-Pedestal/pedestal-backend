@@ -9,3 +9,4 @@ module.exports.UsersAPI = require("./routes/Users");
 module.exports.WorkspacesAPI = require("./routes/Workspaces");
 module.exports.MeetingsAPI = require("./routes/Meetings");
 module.exports.BillingsAPI = require("./routes/Billings");
+module.exports.SkillsAPI = require("./routes/Skills");

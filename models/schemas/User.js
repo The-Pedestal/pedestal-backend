@@ -79,7 +79,12 @@ const UserSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
-        skills: [String],
+        skills: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "skill",
+            }
+        ],
         workspaces: [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -104,7 +109,7 @@ const UserSchema = new mongoose.Schema(
                 ref: "user_project",
             },
         ],
-        education: [
+        educations: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user_education",
@@ -115,6 +120,7 @@ const UserSchema = new mongoose.Schema(
         mentor_detail: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "mentor_detail",
+            default: null
         },
     },
     { timestamps: true },
