@@ -5,19 +5,19 @@ module.exports = new Schema({
     //who does the project belong to
     name: {
         type: String,
-        default: "",
+        required: true,
     },
     url: {
         type: String,
-        default: "",
+        default: null,
     },
     description: {
         type: String,
-        default: "",
+        required: true
     },
     image: {
         type: String,
-        default: "",
+        default: null,
     },
     user: {
         type: Schema.Types.ObjectId,
