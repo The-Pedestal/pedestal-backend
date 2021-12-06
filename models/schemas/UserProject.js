@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 module.exports = new Schema({
-    //who does the project belong to
     name: {
         type: String,
         required: true,

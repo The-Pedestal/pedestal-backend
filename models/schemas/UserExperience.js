@@ -34,17 +34,25 @@ module.exports = new Schema({
         type: String,
         default: null,
     },
-    start_date: {
-        type: Date,
+    start_month: {
+        type: Number,
+        required: true,
+    },
+    start_year: {
+        type: Number,
+        required: true,
+    },
+    end_year: {
+        type: Number,
+        required: true,
+    },
+    end_month: {
+        type: Number,
         required: true,
     },
     current_job: {
         type: Boolean,
         default: false,
-    },
-    end_date: {
-        type: Date,
-        default: null,
     },
     user: {
         type: Schema.Types.ObjectId,

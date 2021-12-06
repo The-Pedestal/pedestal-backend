@@ -15,11 +15,21 @@ module.exports = new Schema({
         type: String,
         default: "",
     },
-    start_date: {
-        type: Date,
+    start_month: {
+        type: Number,
+        required: true,
     },
-    end_date: {
-        type: Date,
+    start_year: {
+        type: Number,
+        required: true,
+    },
+    end_year: {
+        type: Number,
+        required: true,
+    },
+    end_month: {
+        type: Number,
+        required: true,
     },
     user: {
         type: Schema.Types.ObjectId,
